@@ -5,8 +5,7 @@
     <IsPackable>true</IsPackable>
     <IsAotCompatible Condition="'$(TargetFramework)' != 'netstandard2.0'">false</IsAotCompatible>
     <IsTrimmable>false</IsTrimmable>
-    <DefineConstants>$(DefineConstants);OPENCLI_VISIBILITY_INTERNAL</DefineConstants>
-    <RootNamespace>Spectre.Tui</RootNamespace>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup Label="Dependencies">
