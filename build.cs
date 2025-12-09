@@ -15,7 +15,7 @@ Task("Clean")
 Task("Lint")
     .Does(context =>
 {
-    DotNetFormat("./src/Spectre.Tui.slnx", new DotNetFormatSettings
+    DotNetFormatStyle("./src/Spectre.Tui.slnx", new DotNetFormatSettings
     {
         VerifyNoChanges = true,
     });
