@@ -9,12 +9,12 @@ public static class Program
     {
         var running = true;
 
-        using var terminal = new Terminal();
+        using var terminal = Terminal.Create();
         var renderer = new Renderer(terminal);
 
         while (running)
         {
-            renderer.Draw((ctx, _) =>
+            renderer.Draw((ctx, elapsed) =>
             {
                 // Outer box
                 ctx.Render(new BoxWidget());
@@ -25,6 +25,11 @@ public static class Program
                 ctx.Render(new BoxWidget(), inner);
                 ctx.Render(
                     new ClearWidget(new Rune('O'), Decoration.Bold),
+                    inner.Inflate(-1, -1));
+
+                // FPS
+                ctx.Render(
+                    new TextWidget(((int)(1.0f / elapsed.TotalSeconds)).ToString()),
                     inner.Inflate(-1, -1));
             });
 

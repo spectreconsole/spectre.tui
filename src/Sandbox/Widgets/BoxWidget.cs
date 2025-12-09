@@ -1,4 +1,7 @@
-namespace Spectre.Tui;
+using System.Text;
+using Spectre.Tui;
+
+namespace Sandbox;
 
 public sealed class BoxWidget : IWidget
 {
