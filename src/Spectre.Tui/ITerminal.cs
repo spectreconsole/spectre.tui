@@ -93,20 +93,20 @@ public sealed class Terminal : ITerminal
     }
 }
 
-public static class AnsiBuilder
+file static class AnsiBuilder
 {
-    private const string ESC = "\u001b";
-    private const string CSI = ESC + "[";
+    private const string Esc = "\e";
+    private const string Csi = Esc + "[";
 
     public static string GetAnsi(Cell cell)
     {
-        return $"{SGR(GetAnsiCodes(cell.Decoration))}{cell.Rune}{SGR(0)}";
+        return $"{Sgr(GetAnsiCodes(cell.Decoration))}{cell.Rune}{Sgr(0)}";
     }
 
-    private static string SGR(params IEnumerable<byte> codes)
+    private static string Sgr(params IEnumerable<byte> codes)
     {
         var joinedCodes = string.Join(";", codes.Select(c => c.ToString()));
-        return $"{CSI}{joinedCodes}m";
+        return $"{Csi}{joinedCodes}m";
     }
 
     private static IEnumerable<byte> GetAnsiCodes(Decoration decoration)

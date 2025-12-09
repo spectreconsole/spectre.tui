@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace Spectre.Tui;
 
+[DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public readonly struct Size(int width, int height) : IEquatable<Size>
 {
     public int Width { get; } = width;
@@ -35,5 +38,10 @@ public readonly struct Size(int width, int height) : IEquatable<Size>
     public static bool operator !=(Size left, Size right)
     {
         return !(left == right);
+    }
+
+    private string DebuggerDisplay()
+    {
+        return $"{Width},{Height}";
     }
 }

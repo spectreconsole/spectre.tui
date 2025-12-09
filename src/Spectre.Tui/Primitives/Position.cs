@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace Spectre.Tui;
 
+[DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public readonly struct Position(int x, int y) : IEquatable<Position>
 {
     public int X { get; } = x;
@@ -28,5 +31,10 @@ public readonly struct Position(int x, int y) : IEquatable<Position>
     public static bool operator !=(Position left, Position right)
     {
         return !(left == right);
+    }
+
+    private string DebuggerDisplay()
+    {
+        return $"{X},{Y}";
     }
 }

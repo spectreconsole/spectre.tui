@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace Spectre.Tui;
 
+[DebuggerDisplay("{DebuggerDisplay(),nq}")]
 internal sealed class Buffer
 {
     private Rectangle _screen;
@@ -76,6 +79,11 @@ internal sealed class Buffer
             var y = (index / _screen.Width) + _screen.Y;
             yield return (x, y, current);
         }
+    }
+
+    private string DebuggerDisplay()
+    {
+        return $"{_screen.X},{_screen.Y},{_screen.Width},{_screen.Height} ({_length} cells)";
     }
 }
 

@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Spectre.Tui;
 
+[DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public readonly struct Rectangle(int x, int y, int width, int height)
     : IEquatable<Rectangle>
 {
@@ -128,6 +130,11 @@ public readonly struct Rectangle(int x, int y, int width, int height)
     }
 
     public override string ToString()
+    {
+        return $"{X},{Y},{Width},{Height}";
+    }
+
+    private string DebuggerDisplay()
     {
         return $"{X},{Y},{Width},{Height}";
     }
