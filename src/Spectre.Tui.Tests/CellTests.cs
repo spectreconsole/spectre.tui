@@ -1,6 +1,6 @@
 using Shouldly;
 
-namespace Spectre.Tui.Tests.Rendering;
+namespace Spectre.Tui.Tests;
 
 public sealed class CellTests
 {
