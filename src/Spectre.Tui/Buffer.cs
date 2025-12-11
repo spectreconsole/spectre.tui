@@ -19,45 +19,38 @@ internal sealed class Buffer
         }
     }
 
-    public Cell GetCell(int index)
+    public Cell? GetCell(int index)
     {
         return index < 0 || index >= _length
-            ? default
+            ? null
             : _cells[index];
     }
 
-    public Cell GetCell(int x, int y)
+    public Cell? GetCell(int x, int y)
     {
         if (x < 0 || y < 0 || x >= _screen.Width || y >= _screen.Height)
         {
-            return default;
+            return null;
         }
 
         return _cells[(y * _screen.Width) + x];
     }
 
-    public void SetCell(int x, int y, Cell cell)
-    {
-        var index = (y * _screen.Width) + x;
-        if (index < 0 || index >= _cells.Length)
-        {
-            return;
-        }
-
-        _cells[index] = cell;
-    }
-
     public void Reset()
     {
-        var cells = new Cell[_screen.CalculateArea()];
-        Array.Fill(cells, new Cell());
-        _cells = cells;
+        for (var index = 0; index < _cells.Length; index++)
+        {
+            _cells[index].Reset();
+        }
     }
 
     public void Resize(Rectangle area)
     {
         var cells = new Cell[area.CalculateArea()];
-        Array.Fill(cells, new Cell());
+        for (var index = 0; index < cells.Length; index++)
+        {
+            cells[index] = new Cell();
+        }
 
         _cells = cells;
         _screen = area;
@@ -68,7 +61,7 @@ internal sealed class Buffer
     {
         foreach (var (index, (current, previous)) in other._cells.Zip(_cells).Index())
         {
-            if (current.Equals(previous) || current == default)
+            if (current.Equals(previous))
             {
                 continue;
             }
@@ -94,10 +87,14 @@ internal static class BufferExtensions
             return Filled(region, new Cell());
         }
 
-        public static Buffer Filled(Rectangle area, Cell cell)
+        public static Buffer Filled(Rectangle area, Cell prototype)
         {
             var cells = new Cell[area.CalculateArea()];
-            Array.Fill(cells, cell);
+            for (var index = 0; index < cells.Length; index++)
+            {
+                cells[index] = prototype.Clone();
+            }
+
             return new Buffer(area, cells);
         }
     }

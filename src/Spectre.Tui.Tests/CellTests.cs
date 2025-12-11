@@ -1,3 +1,4 @@
+using System.Text;
 using Shouldly;
 
 namespace Spectre.Tui.Tests;
@@ -13,7 +14,7 @@ public sealed class CellTests
             var cell = new Cell();
 
             // Then
-            cell.Rune.ShouldBe(default);
+            cell.Rune.ShouldBe(new Rune(' '));
         }
 
         [Fact]

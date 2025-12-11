@@ -15,13 +15,11 @@ public sealed class ClearWidget(
         {
             for (var y = 0; y < context.Viewport.Height; y++)
             {
-                context.SetCell(x, y, new Cell
-                {
-                    Decoration = decoration,
-                    Rune = rune,
-                    Foreground = foreground ?? Color.Default,
-                    Background = background ?? Color.Default,
-                });
+                context.GetCell(x, y)
+                    ?.SetRune(rune)
+                    .SetDecoration(decoration)
+                    .SetForeground(foreground)
+                    .SetBackground(background);
             }
         }
     }
