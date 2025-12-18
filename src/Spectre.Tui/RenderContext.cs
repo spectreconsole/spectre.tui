@@ -9,9 +9,10 @@ public interface IRenderContext
     /// <summary>
     /// Sets the cell at the specified (viewport) coordinates.
     /// </summary>
-    void SetCell(int x, int y, Cell cell);
-
-    Cell GetCell(int x, int y);
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    Cell? GetCell(int x, int y);
 }
 
 public static class IRenderContextExtensions
@@ -30,29 +31,17 @@ public static class IRenderContextExtensions
 
         public void SetRune(int x, int y, Rune rune)
         {
-            var cell = context.GetCell(x, y);
-            context.SetCell(x, y, cell with
-            {
-                Rune = rune
-            });
+            context.GetCell(x, y)?.SetRune(rune);
         }
 
         public void SetForeground(int x, int y, Color? color)
         {
-            color ??= Color.Default;
-            context.SetCell(x, y, context.GetCell(x, y) with
-            {
-                Foreground = color!.Value,
-            });
+            context.GetCell(x, y)?.SetForeground(color);
         }
 
         public void SetBackground(int x, int y, Color? color)
         {
-            color ??= Color.Default;
-            context.SetCell(x, y, context.GetCell(x, y) with
-            {
-                Background = color!.Value,
-            });
+            context.GetCell(x, y)?.SetBackground(color);
         }
     }
 }
@@ -86,12 +75,7 @@ internal sealed record RenderContext : IRenderContext
         widget.Render(this with { Screen = screen, Viewport = viewport });
     }
 
-    public void SetCell(int x, int y, Cell cell)
-    {
-        Buffer.SetCell(Screen.X + x, Screen.Y + y, cell);
-    }
-
-    public Cell GetCell(int x, int y)
+    public Cell? GetCell(int x, int y)
     {
         return Buffer.GetCell(Screen.X + x, Screen.Y + y);
     }
