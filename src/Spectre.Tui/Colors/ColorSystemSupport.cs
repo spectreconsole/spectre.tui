@@ -3,6 +3,7 @@ namespace Spectre.Tui;
 /// <summary>
 /// Determines what color system should be used.
 /// </summary>
+[PublicAPI]
 public enum ColorSystemSupport
 {
     /// <summary>

@@ -4,7 +4,7 @@ namespace Sandbox;
 
 public sealed class BoxWidget(Color? color = null) : IWidget
 {
-    public void Render(IRenderContext context)
+    public void Render(RenderContext context)
     {
         var area = context.Viewport;
 
@@ -13,23 +13,23 @@ public sealed class BoxWidget(Color? color = null) : IWidget
         {
             if (x == 0)
             {
-                context.SetRune(x, 0, '╭');
+                context.SetSymbol(x, 0, '╭');
                 context.SetForeground(x, 0, color);
-                context.SetRune(x, area.Height - 1, '╰');
+                context.SetSymbol(x, area.Height - 1, '╰');
                 context.SetForeground(x, area.Height - 1, color);
             }
             else if (x == area.Width - 1)
             {
-                context.SetRune(x, 0, '╮');
+                context.SetSymbol(x, 0, '╮');
                 context.SetForeground(x, 0, color);
-                context.SetRune(x, area.Height - 1, '╯');
+                context.SetSymbol(x, area.Height - 1, '╯');
                 context.SetForeground(x, area.Height - 1, color);
             }
             else
             {
-                context.SetRune(x, 0, '─');
+                context.SetSymbol(x, 0, '─');
                 context.SetForeground(x, 0, color);
-                context.SetRune(x, area.Height - 1, '─');
+                context.SetSymbol(x, area.Height - 1, '─');
                 context.SetForeground(x, area.Height - 1, color);
             }
         }
@@ -37,8 +37,8 @@ public sealed class BoxWidget(Color? color = null) : IWidget
         // Sides
         for (var y = 1; y < area.Height - 1; y++)
         {
-            context.SetRune(0, y, '│');
-            context.SetRune(area.Width - 1, y, '│');
+            context.SetSymbol(0, y, '│');
+            context.SetSymbol(area.Width - 1, y, '│');
             context.SetForeground(0, y, color);
             context.SetForeground(area.Width - 1, y, color);
         }

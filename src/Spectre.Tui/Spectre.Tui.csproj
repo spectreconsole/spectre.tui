@@ -5,15 +5,19 @@
     <IsPackable>true</IsPackable>
     <IsAotCompatible Condition="'$(TargetFramework)' != 'netstandard2.0'">false</IsAotCompatible>
     <IsTrimmable>false</IsTrimmable>
+    <DefineConstants>$(DefineConstants)TRACE;WCWIDTH_VISIBILITY_INTERNAL</DefineConstants>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <RootNamespace>Spectre.Tui</RootNamespace>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Wcwidth.Sources"/>
+  </ItemGroup>
 
-  <ItemGroup Label="Dependencies">
-    <PackageReference Include="Polyfill" Condition="'$(TargetFramework)' == 'netstandard2.0'">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Wcwidth.Sources" />
+  <ItemGroup>
+    <Compile Include="..\Annotations.cs">
+      <Link>Properties\Annotations.cs</Link>
+    </Compile>
   </ItemGroup>
 
 </Project>

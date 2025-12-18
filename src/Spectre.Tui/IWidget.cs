@@ -1,6 +1,7 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 public interface IWidget
 {
-    void Render(IRenderContext context);
+    void Render(RenderContext context);
 }

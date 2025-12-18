@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace Spectre.Tui;
 
+[PublicAPI]
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public readonly struct Rectangle(int x, int y, int width, int height)
     : IEquatable<Rectangle>
@@ -15,6 +16,8 @@ public readonly struct Rectangle(int x, int y, int width, int height)
     public int Bottom => Y + Height;
     public int Left => X;
     public int Right => X + Width;
+
+    public bool IsEmpty => X == 0 || Y == 0;
 
     public bool Equals(Rectangle other)
     {

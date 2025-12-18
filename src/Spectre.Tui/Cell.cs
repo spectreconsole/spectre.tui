@@ -1,45 +1,60 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public sealed class Cell : IEquatable<Cell>
 {
-    public Rune Rune { get; set; } = new(' ');
-    public Decoration Decoration { get; set; } = Decoration.None;
-    public Color Foreground { get; set; } = Color.Default;
-    public Color Background { get; set; } = Color.Default;
+    public string Symbol { get; private set; } = " ";
+    public Style Style { get; set; } = Style.Plain;
 
-    public Cell SetRune(Rune rune)
+    public Decoration Decoration => Style.Decoration;
+    public Color Foreground => Style.Foreground;
+    public Color Background => Style.Background;
+
+    internal Cell SetSymbol(string? text)
     {
-        Rune = rune;
+        Symbol = text ?? " ";
+        return this;
+    }
+
+    public Cell SetSymbol(Rune rune)
+    {
+        Symbol = rune.ToString();
+        return this;
+    }
+
+    public Cell SetStyle(Style? style)
+    {
+        Style = style ?? Style.Plain;
         return this;
     }
 
     public Cell SetDecoration(Decoration? decoration)
     {
-        Decoration = decoration ?? Decoration.None;
+        Style = Style with { Decoration = decoration ?? Decoration.None };
         return this;
     }
 
     public Cell SetForeground(Color? color)
     {
-        Foreground = color ?? Color.Default;
+        Style = Style with { Foreground = color ?? Color.Default };
         return this;
     }
 
     public Cell SetBackground(Color? color)
     {
-        Background = color ?? Color.Default;
+        Style = Style with { Background = color ?? Color.Default };
         return this;
     }
 
     public Cell Clone()
     {
-        return new Cell { Rune = Rune, Background = Background, Foreground = Foreground, Decoration = Decoration };
+        return new Cell { Symbol = Symbol, Style = Style };
     }
 
     private string DebuggerDisplay()
     {
-        return ((char)Rune.Value).ToString();
+        return Symbol;
     }
 
     public bool Equals(Cell? other)
@@ -54,7 +69,8 @@ public sealed class Cell : IEquatable<Cell>
             return true;
         }
 
-        return Rune.Equals(other.Rune) && Decoration == other.Decoration && Foreground.Equals(other.Foreground) && Background.Equals(other.Background);
+        return Symbol.Equals(other.Symbol) && Decoration == other.Decoration && Foreground.Equals(other.Foreground) &&
+               Background.Equals(other.Background);
     }
 
     public override bool Equals(object? obj)
@@ -64,14 +80,23 @@ public sealed class Cell : IEquatable<Cell>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Rune, (int)Decoration, Foreground, Background);
+        return HashCode.Combine(Symbol, (int)Decoration, Foreground, Background);
     }
 
     public void Reset()
     {
-        Rune = new Rune(' ');
-        Foreground = Color.Default;
-        Background = Color.Default;
-        Decoration = Decoration.None;
+        Symbol = " ";
+        Style = Style.Plain;
+    }
+}
+
+public static class CellExtensions
+{
+    extension(Cell cell)
+    {
+        public Cell SetSymbol(char symbol)
+        {
+            return cell.SetSymbol(new Rune(symbol));
+        }
     }
 }

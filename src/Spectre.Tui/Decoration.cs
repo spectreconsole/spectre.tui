@@ -1,6 +1,7 @@
 namespace Spectre.Tui;
 
 [Flags]
+[PublicAPI]
 public enum Decoration : ushort
 {
     None = 0,

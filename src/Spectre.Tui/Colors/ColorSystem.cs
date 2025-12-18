@@ -3,6 +3,7 @@ namespace Spectre.Tui;
 /// <summary>
 /// Represents a color system.
 /// </summary>
+[PublicAPI]
 public enum ColorSystem
 {
     /// <summary>

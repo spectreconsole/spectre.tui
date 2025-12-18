@@ -1,5 +1,3 @@
-using Shouldly;
-
 namespace Spectre.Tui.Tests;
 
 public sealed class SizeTests

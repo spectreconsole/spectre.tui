@@ -1,5 +1,6 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public readonly struct Position(int x, int y) : IEquatable<Position>
 {

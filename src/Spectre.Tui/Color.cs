@@ -3,6 +3,7 @@ namespace Spectre.Tui;
 /// <summary>
 /// Represents a color.
 /// </summary>
+[PublicAPI]
 public readonly partial struct Color : IEquatable<Color>
 {
     /// <summary>

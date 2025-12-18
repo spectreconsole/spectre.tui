@@ -1,5 +1,6 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public readonly struct Size(int width, int height) : IEquatable<Size>
 {

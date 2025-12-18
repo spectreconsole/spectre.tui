@@ -5,7 +5,7 @@ namespace Spectre.Tui.Testing;
 public sealed class TestTerminal : ITerminal
 {
     private readonly Size _size;
-    private readonly char[] _buffer;
+    private readonly string[] _buffer;
     private int _position;
 
     public bool SupportsAnsi { get; set; }
@@ -14,10 +14,10 @@ public sealed class TestTerminal : ITerminal
     public TestTerminal(Size? size)
     {
         _size = size ?? new Size(80, 25);
-        _buffer = new char[_size.Area];
+        _buffer = new string[_size.Area];
         _position = 0;
 
-        Array.Fill(_buffer, '•');
+        Array.Fill(_buffer, "•");
     }
 
     public void Dispose()
@@ -26,7 +26,7 @@ public sealed class TestTerminal : ITerminal
 
     public void Clear()
     {
-        Array.Fill(_buffer, '•');
+        Array.Fill(_buffer, "•");
         _position = 0;
     }
 
@@ -42,18 +42,9 @@ public sealed class TestTerminal : ITerminal
 
     public void Write(Cell cell)
     {
-        _buffer[_position] = (char)cell.Rune.Value;
+        _buffer[_position] = cell.Symbol;
         _position++;
     }
-
-    // public void Write(ReadOnlySpan<char> span)
-    // {
-    //     foreach (var character in span)
-    //     {
-    //         _buffer[_position] = character;
-    //         _position++;
-    //     }
-    // }
 
     public void Flush()
     {

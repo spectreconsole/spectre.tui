@@ -1,5 +1,6 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 public sealed class Renderer
 {
     private readonly ITerminal _terminal;
@@ -24,13 +25,12 @@ public sealed class Renderer
         _stopwatch.Start();
     }
 
-    public void Draw(Action<IRenderContext, TimeSpan> callback)
+    public void Draw(Action<RenderContext, TimeSpan> callback)
     {
         var elapsed = _stopwatch.Elapsed - _lastUpdate;
         _lastUpdate = _stopwatch.Elapsed;
 
-        // Resize the buffers (if needed)
-        Resize();
+        ResizeIfNeeded();
 
         // Fill out the current frame
         var frame = new RenderContext(_buffers[_bufferIndex], _viewport, _viewport);
@@ -62,7 +62,7 @@ public sealed class Renderer
         _terminal.Flush();
     }
 
-    private void Resize()
+    private void ResizeIfNeeded()
     {
         var area = _terminal.GetSize().ToRectangle();
         if (area.Equals(_viewport))

@@ -7,7 +7,7 @@ internal static class AnsiBuilder
 
     public static string GetAnsi(ref Cell cell, ColorSystem colors)
     {
-        return $"{Sgr(GetAnsiCodes(colors, ref cell))}{cell.Rune}{Sgr(0)}";
+        return $"{Sgr(GetAnsiCodes(colors, ref cell))}{cell.Symbol}{Sgr(0)}";
     }
 
     private static IEnumerable<byte> GetAnsiCodes(ColorSystem colors, ref Cell cell)

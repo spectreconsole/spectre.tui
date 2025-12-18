@@ -1,17 +1,14 @@
-using Shouldly;
-using Spectre.Tui.Testing;
-
 namespace Spectre.Tui.Tests;
 
 public sealed class RendererTests
 {
     private sealed class TestTextWidget(int x, int y, string text) : IWidget
     {
-        public void Render(IRenderContext context)
+        public void Render(RenderContext context)
         {
             for (var i = 0; i < text.Length; i++)
             {
-                context.SetRune(x + i, y, text[i]);
+                context.SetSymbol(x + i, y, text[i]);
             }
         }
     }

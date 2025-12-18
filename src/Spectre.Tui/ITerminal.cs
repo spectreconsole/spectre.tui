@@ -1,5 +1,6 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 public interface ITerminal : IDisposable
 {
     void Clear();
