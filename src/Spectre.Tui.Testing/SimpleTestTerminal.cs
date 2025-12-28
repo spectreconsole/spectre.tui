@@ -2,16 +2,15 @@ using System.Text;
 
 namespace Spectre.Tui.Testing;
 
-public sealed class TestTerminal : ITerminal
+public sealed class SimpleTestTerminal : ITestTerminal
 {
     private readonly Size _size;
     private readonly string[] _buffer;
     private int _position;
 
-    public bool SupportsAnsi { get; set; }
     public string Output { get; private set; } = "[Terminal buffer not flushed]";
 
-    public TestTerminal(Size? size)
+    public SimpleTestTerminal(Size? size)
     {
         _size = size ?? new Size(80, 25);
         _buffer = new string[_size.Area];

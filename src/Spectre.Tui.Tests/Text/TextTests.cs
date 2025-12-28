@@ -66,4 +66,25 @@ public sealed class TextTests
             result.ShouldBe(6);
         }
     }
+
+    public sealed class TheFromMarkupMethod
+    {
+        [Fact]
+        public void Should_Parse_Markup()
+        {
+            // Given
+            var fixture = new TuiFixture(
+                new AnsiTestTerminal(
+                    ColorSystem.TrueColor));
+
+            // When
+            var result = fixture.Render(ctx =>
+            {
+                ctx.Render(Text.FromMarkup("[yellow]Hello[/] World"));
+            });
+
+            // Then
+            result.ShouldBe("\e[1;1H\e[0m\e[38;5;11mHello\e[1;7H\e[0m\e[mWorld");
+        }
+    }
 }

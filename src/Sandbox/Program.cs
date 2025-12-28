@@ -34,7 +34,11 @@ public static class Program
                     inner.Inflate(-1, -1));
 
                 // Some text
-                ctx.Render(Text.FromMarkup("नमस्ते [red]Happy Holidays[/] 🎅 Happy Holidays\n[u]Happy Holidays[/] Happy Holidays [yellow bold]Happy Holidays[/] Happy Holidays Happy Holidays ", Color.Green),
+                ctx.Render(Text.FromMarkup(
+                    """
+                    नमस्ते [red]Happy Holidays[/] 🎅 Happy Holidays\n[u]Happy Holidays[/]
+                    Happy Holidays [yellow bold]Happy Holidays[/] Happy Holidays Happy Holidays
+                    """, Color.Green),
                     inner.Inflate(-1, -1));
             });
 

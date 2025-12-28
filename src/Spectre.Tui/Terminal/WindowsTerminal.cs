@@ -1,4 +1,4 @@
-namespace Spectre.Tui;
+namespace Spectre.Tui.Ansi;
 
 internal sealed class WindowsTerminal : AnsiTerminal
 {

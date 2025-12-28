@@ -1,45 +1,92 @@
-namespace Spectre.Tui;
+namespace Spectre.Tui.Ansi;
 
-internal static class AnsiBuilder
+internal sealed class AnsiBuilder
 {
+    private readonly State _state = new();
+    private readonly StringBuilder _builder = new();
+
     private const string Esc = "\e";
     private const string Csi = Esc + "[";
 
-    public static string GetAnsi(ref Cell cell, ColorSystem colors)
+    public string GetAnsi(Cell cell, ColorSystem colors)
     {
-        return $"{Sgr(GetAnsiCodes(colors, ref cell))}{cell.Symbol}{Sgr(0)}";
-    }
-
-    private static IEnumerable<byte> GetAnsiCodes(ColorSystem colors, ref Cell cell)
-    {
-        var codes = AnsiDecorationBuilder.GetAnsiCodes(cell.Decoration);
-
-        // Got foreground?
-        if (cell.Foreground != Color.Default)
+        if (!_state.Update(cell))
         {
-            codes = codes.Concat(
-                AnsiColorBuilder.GetAnsiCodes(
-                    colors,
-                    cell.Foreground,
-                    true));
+            // State did not change
+            return cell.Symbol;
         }
 
-        // Got background?
-        if (cell.Background != Color.Default)
-        {
-            codes = codes.Concat(
-                AnsiColorBuilder.GetAnsiCodes(
-                    colors,
-                    cell.Background,
-                    false));
-        }
+        _builder.Clear();
+        _builder.Append(Sgr(0)); // Close any previous state
+        _builder.Append(Sgr(_state.GetAnsi(colors)));
+        _builder.Append(cell.Symbol);
 
-        return codes;
+        // Swap the states
+        _state.Swap();
+
+        // Return the result
+        return _builder.ToString();
     }
 
     private static string Sgr(params IEnumerable<byte> codes)
     {
-        var joinedCodes = string.Join(";", codes.Select(c => c.ToString()));
-        return $"{Csi}{joinedCodes}m";
+        return $"{Csi}{string.Join(";", codes.Select(c => c.ToString()))}m";
+    }
+
+    private sealed class State
+    {
+        private Style? _current;
+        private Style? _previous;
+        private List<byte> _result = [];
+
+        public bool Update(Cell cell)
+        {
+            _current = cell.Style;
+
+            // First time we run?
+            if (_previous == null)
+            {
+                return true;
+            }
+
+            return _current != _previous;
+        }
+
+        public void Swap()
+        {
+            _previous = _current;
+            _current = null;
+        }
+
+        public List<byte> GetAnsi(ColorSystem colors)
+        {
+            if (!_current.HasValue)
+            {
+                throw new InvalidOperationException("State has not been updated");
+            }
+
+            _result.Clear();
+
+            // Decoration
+            AnsiDecorationBuilder.GetSgr(_current.Value.Decoration, ref _result);
+
+            // Foreground
+            if (_current.Value.Foreground != Color.Default)
+            {
+                AnsiColorBuilder.GetSgr(
+                    colors, _current.Value.Foreground,
+                    foreground: true, ref _result);
+            }
+
+            // Background
+            if (_current.Value.Background != Color.Default)
+            {
+                AnsiColorBuilder.GetSgr(
+                    colors, _current.Value.Background,
+                    foreground: false, ref _result);
+            }
+
+            return _result;
+        }
     }
 }

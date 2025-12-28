@@ -4,33 +4,33 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace Spectre.Tui;
+namespace Spectre.Tui.Ansi;
 
 internal static class AnsiDetector
 {
     private static readonly Regex[] _regexes =
-    {
-        new("^xterm"), // xterm, PuTTY, Mintty
-        new("^rxvt"), // RXVT
-        new("^eterm"), // Eterm
-        new("^screen"), // GNU screen, tmux
-        new("tmux"), // tmux
-        new("^vt100"), // DEC VT series
-        new("^vt102"), // DEC VT series
-        new("^vt220"), // DEC VT series
-        new("^vt320"), // DEC VT series
-        new("ansi"), // ANSI
-        new("scoansi"), // SCO ANSI
-        new("cygwin"), // Cygwin, MinGW
-        new("linux"), // Linux console
-        new("konsole"), // Konsole
-        new("bvterm"), // Bitvise SSH Client
+    [
+        new("^xterm"),       // xterm, PuTTY, Mintty
+        new("^rxvt"),        // RXVT
+        new("^eterm"),       // Eterm
+        new("^screen"),      // GNU screen, tmux
+        new("tmux"),         // tmux
+        new("^vt100"),       // DEC VT series
+        new("^vt102"),       // DEC VT series
+        new("^vt220"),       // DEC VT series
+        new("^vt320"),       // DEC VT series
+        new("ansi"),         // ANSI
+        new("scoansi"),      // SCO ANSI
+        new("cygwin"),       // Cygwin, MinGW
+        new("linux"),        // Linux console
+        new("konsole"),      // Konsole
+        new("bvterm"),       // Bitvise SSH Client
         new("^st-256color"), // Suckless Simple Terminal, st
-        new("alacritty"), // Alacritty
-    };
+        new("alacritty"),    // Alacritty
+        new("ghostty")       // Ghostty
+    ];
 
     public static (bool SupportsAnsi, bool LegacyConsole) Detect(bool stdError, bool upgrade)
     {

@@ -1,15 +1,17 @@
-namespace Spectre.Tui;
+namespace Spectre.Tui.Ansi;
 
-internal abstract class AnsiTerminal : ITerminal
+public abstract class AnsiTerminal : ITerminal
 {
     private readonly StringBuilder _buffer;
+    private readonly AnsiBuilder _ansi;
 
-    public bool SupportsAnsi { get; protected set; } = true;
     public ColorSystem ColorSystem { get; protected set; }
 
     protected AnsiTerminal(ColorSystem colors)
     {
         _buffer = new StringBuilder();
+        _ansi = new AnsiBuilder();
+
         ColorSystem = colors;
 
         Write("\e[?1049h\e[H");
@@ -61,9 +63,10 @@ internal abstract class AnsiTerminal : ITerminal
 
     public void Write(Cell cell)
     {
-        Write(AnsiBuilder.GetAnsi(ref cell, ColorSystem));
+        Write(_ansi.GetAnsi(cell, ColorSystem));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void Write(ReadOnlySpan<char> text)
     {
         _buffer.Append(text.ToArray());

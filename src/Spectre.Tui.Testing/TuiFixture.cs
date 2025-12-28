@@ -2,12 +2,18 @@ namespace Spectre.Tui.Testing;
 
 public sealed class TuiFixture
 {
-    private readonly TestTerminal _terminal;
+    private readonly ITestTerminal _terminal;
     private readonly Renderer _renderer;
 
     public TuiFixture(Size? size = null)
     {
-        _terminal = new TestTerminal(size ?? new Size(80, 25));
+        _terminal = new SimpleTestTerminal(size ?? new Size(80, 25));
+        _renderer = new Renderer(_terminal);
+    }
+
+    public TuiFixture(ITestTerminal terminal)
+    {
+        _terminal = terminal ?? throw new ArgumentNullException(nameof(terminal));
         _renderer = new Renderer(_terminal);
     }
 

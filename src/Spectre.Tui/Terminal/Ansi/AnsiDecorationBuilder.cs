@@ -1,52 +1,52 @@
-namespace Spectre.Tui;
+namespace Spectre.Tui.Ansi;
 
 internal static class AnsiDecorationBuilder
 {
-    public static IEnumerable<byte> GetAnsiCodes(Decoration decoration)
+    public static void GetSgr(Decoration decoration, ref List<byte> result)
     {
         if ((decoration & Decoration.Bold) != 0)
         {
-            yield return 1;
+            result.Add(1);
         }
 
         if ((decoration & Decoration.Dim) != 0)
         {
-            yield return 2;
+            result.Add(2);
         }
 
         if ((decoration & Decoration.Italic) != 0)
         {
-            yield return 3;
+            result.Add(3);
         }
 
         if ((decoration & Decoration.Underlined) != 0)
         {
-            yield return 4;
+            result.Add(4);
         }
 
         if ((decoration & Decoration.SlowBlink) != 0)
         {
-            yield return 5;
+            result.Add(5);
         }
 
         if ((decoration & Decoration.RapidBlink) != 0)
         {
-            yield return 6;
+            result.Add(6);
         }
 
         if ((decoration & Decoration.Invert) != 0)
         {
-            yield return 7;
+            result.Add(7);
         }
 
         if ((decoration & Decoration.Conceal) != 0)
         {
-            yield return 8;
+            result.Add(8);
         }
 
         if ((decoration & Decoration.Strikethrough) != 0)
         {
-            yield return 9;
+            result.Add(9);
         }
     }
 }
