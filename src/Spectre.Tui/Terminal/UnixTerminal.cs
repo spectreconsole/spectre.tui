@@ -1,6 +1,4 @@
-using System.Runtime.InteropServices;
-
-namespace Spectre.Tui;
+namespace Spectre.Tui.Ansi;
 
 internal sealed class UnixTerminal : AnsiTerminal
 {
@@ -10,13 +8,12 @@ internal sealed class UnixTerminal : AnsiTerminal
     public UnixTerminal(ColorSystem colors)
         : base(colors)
     {
-        SupportsAnsi = true;
     }
 
     public override Size GetSize()
     {
         // TODO: Use ioctl with TIOCGWINSZ
-        return new Size(System.Console.WindowWidth, System.Console.WindowHeight);
+        return new Size(Console.WindowWidth, Console.WindowHeight);
     }
 
     protected override void Flush(string buffer)

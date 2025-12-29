@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace Spectre.Tui;
 
 internal static class ColorSystemDetector
