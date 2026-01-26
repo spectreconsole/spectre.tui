@@ -1,3 +1,4 @@
+using Spectre.Console;
 using Spectre.Tui;
 
 namespace Sandbox;
@@ -5,7 +6,7 @@ namespace Sandbox;
 public sealed class FpsWidget : IWidget
 {
     private readonly string _text;
-    private readonly Style _style;
+    private readonly Appearance _style;
 
     public FpsWidget(
         TimeSpan elapsed,
@@ -15,7 +16,7 @@ public sealed class FpsWidget : IWidget
         var fps = TimeSpan.FromSeconds(1) / elapsed;
 
         _text = $"[yellow]FPS:[/] {fps:0.000}";
-        _style = new Style
+        _style = new Appearance
         {
             Foreground = foreground ?? Color.Default,
             Background = background ?? Color.Default,
@@ -24,11 +25,14 @@ public sealed class FpsWidget : IWidget
 
     public void Render(RenderContext context)
     {
+        var text = Text.FromMarkup(_text, _style);
+        var width = text.GetWidth();
+
         context.Render(
-            Text.FromMarkup(_text, _style),
+            text,
             new Rectangle(
-                (context.Viewport.Width - _text.Length) / 2,
+                (context.Viewport.Width - width) / 2,
                 context.Viewport.Height / 2,
-                _text.Length, 1));
+                width, 1));
     }
 }

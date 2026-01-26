@@ -3,7 +3,7 @@ namespace Spectre.Tui;
 [PublicAPI]
 public sealed record TextLine
 {
-    public Style? Style { get; set; }
+    public Appearance? Style { get; set; }
     public List<TextSpan> Spans { get; init; } = [];
 
     public TextLine()
@@ -36,7 +36,7 @@ public static class LineExtensions
 {
     extension(TextLine)
     {
-        public static TextLine FromString(string text, Style? style = null)
+        public static TextLine FromString(string text, Appearance? style = null)
         {
             return new TextLine(new TextSpan(text))
             {

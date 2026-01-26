@@ -4,19 +4,24 @@ namespace Spectre.Tui.Ansi;
 public abstract class AnsiTerminal : ITerminal
 {
     private readonly StringBuilder _buffer;
-    private readonly AnsiBuilder _ansi;
+    private readonly AnsiWriter _writer;
+    private readonly AnsiState _state;
 
-    public ColorSystem ColorSystem { get; protected set; }
+    public AnsiCapabilities Capabilities { get; }
 
-    protected AnsiTerminal(ColorSystem colors)
+    protected AnsiTerminal(AnsiCapabilities capabilities)
     {
+        Capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
+
         _buffer = new StringBuilder();
-        _ansi = new AnsiBuilder();
+        _writer = new AnsiWriter(new StringWriter(_buffer), capabilities);
+        _state = new AnsiState(_writer);
 
-        ColorSystem = colors;
+        _writer
+            .EnterAltScreen()
+            .CursorHome()
+            .HideCursor();
 
-        Write("\e[?1049h\e[H");
-        Write("\e[?25l");
         Flush();
     }
 
@@ -26,12 +31,16 @@ public abstract class AnsiTerminal : ITerminal
         GC.SuppressFinalize(this);
     }
 
+    protected abstract void Flush(string buffer);
+
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)
         {
-            Write("\e[?1049l");
-            Write("\e[?25h");
+            _writer
+                .ExitAltScreen()
+                .ShowCursor();
+
             Flush();
         }
     }
@@ -48,28 +57,88 @@ public abstract class AnsiTerminal : ITerminal
         }
     }
 
-    protected abstract void Flush(string buffer);
-
     public void Clear()
     {
-        Write("\e[2J");
+        _writer.EraseInDisplay(2);
     }
 
     public abstract Size GetSize();
 
     public void MoveTo(int x, int y)
     {
-        Write($"\e[{y + 1};{x + 1}H");
+        _writer.CursorPosition(y + 1, x + 1);
     }
 
     public void Write(Cell cell)
     {
-        Write(_ansi.GetAnsi(cell, ColorSystem));
+        if (!_state.Update(cell))
+        {
+            // State did not change
+            _writer.Write(cell.Symbol);
+            return;
+        }
+
+        // Reset SGR attributes
+        _writer.ResetStyle();
+
+        // Write the cell appearance
+        _state.Write();
+
+        // Write the cell symbol
+        _writer.Write(cell.Symbol);
+
+        // Swap the states
+        _state.Swap();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void Write(ReadOnlySpan<char> text)
+    private sealed class AnsiState(AnsiWriter writer)
     {
-        _buffer.Append(text.ToArray());
+        private Appearance? _current;
+        private Appearance? _previous;
+        private readonly AnsiWriter _writer = writer;
+
+        public Appearance? Current => _current;
+
+        public bool Update(Cell cell)
+        {
+            _current = cell.Style;
+
+            // First time we run?
+            if (_previous == null)
+            {
+                return true;
+            }
+
+            return Current != _previous;
+        }
+
+        public void Swap()
+        {
+            _previous = Current;
+            _current = null;
+        }
+
+        public void Write()
+        {
+            if (!Current.HasValue)
+            {
+                throw new InvalidOperationException("State has not been updated");
+            }
+
+            // Decoration
+            _writer.Decoration(Current.Value.Decoration);
+
+            // Foreground
+            if (Current.Value.Foreground != Color.Default)
+            {
+                _writer.Foreground(Current.Value.Foreground);
+            }
+
+            // Background
+            if (Current.Value.Background != Color.Default)
+            {
+                _writer.Background(Current.Value.Foreground);
+            }
+        }
     }
 }

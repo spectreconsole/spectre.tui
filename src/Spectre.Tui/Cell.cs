@@ -4,8 +4,10 @@ namespace Spectre.Tui;
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public sealed class Cell : IEquatable<Cell>
 {
-    public string Symbol { get; private set; } = " ";
-    public Style Style { get; set; } = Style.Plain;
+    private const string EmptySymbol = " ";
+
+    public string Symbol { get; private set; } = EmptySymbol;
+    public Appearance Style { get; set; } = Appearance.Plain;
 
     public Decoration Decoration => Style.Decoration;
     public Color Foreground => Style.Foreground;
@@ -13,7 +15,7 @@ public sealed class Cell : IEquatable<Cell>
 
     internal Cell SetSymbol(string? text)
     {
-        Symbol = text ?? " ";
+        Symbol = text ?? EmptySymbol;
         return this;
     }
 
@@ -23,9 +25,9 @@ public sealed class Cell : IEquatable<Cell>
         return this;
     }
 
-    public Cell SetStyle(Style? style)
+    public Cell SetStyle(Appearance? style)
     {
-        Style = style ?? Style.Plain;
+        Style = style ?? Appearance.Plain;
         return this;
     }
 
@@ -85,8 +87,8 @@ public sealed class Cell : IEquatable<Cell>
 
     public void Reset()
     {
-        Symbol = " ";
-        Style = Style.Plain;
+        Symbol = EmptySymbol;
+        Style = Appearance.Plain;
     }
 }
 

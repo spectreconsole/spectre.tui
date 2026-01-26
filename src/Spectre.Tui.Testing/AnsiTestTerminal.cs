@@ -1,3 +1,4 @@
+using Spectre.Console;
 using Spectre.Tui.Ansi;
 
 namespace Spectre.Tui.Testing;
@@ -6,11 +7,18 @@ public sealed class AnsiTestTerminal : AnsiTerminal, ITestTerminal
 {
     private readonly Size _size;
 
-
     public string Output { get; private set; } = "[Terminal buffer not flushed]";
 
-    public AnsiTestTerminal(ColorSystem colors, Size? size = null)
-        : base(colors)
+    public AnsiTestTerminal(
+        ColorSystem colors = ColorSystem.TrueColor,
+        Size? size = null)
+            : base(new AnsiCapabilities
+            {
+                Ansi = true,
+                ColorSystem = colors,
+                Links = true,
+                AlternateBuffer = true,
+            })
     {
         _size = size ?? new Size(80, 25);
     }

@@ -4,7 +4,7 @@ namespace Spectre.Tui;
 public record TextSpan
 {
     public string Text { get; init; }
-    public Style? Style { get; init; }
+    public Appearance? Style { get; init; }
     public bool IsLineBreak { get; }
     public bool IsWhiteSpace { get; }
     public bool IsAnsi { get; }
@@ -12,12 +12,12 @@ public record TextSpan
     public static TextSpan TextBreak { get; } = new TextSpan(Environment.NewLine, null, true, false);
     public static TextSpan Empty { get; } = new TextSpan(string.Empty, null, false, false);
 
-    public TextSpan(string text, Style? style = null)
+    public TextSpan(string text, Appearance? style = null)
         : this(text, style, false, false)
     {
     }
 
-    private TextSpan(string text, Style? style, bool lineBreak, bool control)
+    private TextSpan(string text, Appearance? style, bool lineBreak, bool control)
     {
         Text = string.Concat(text.SplitLines());
         Style = style;

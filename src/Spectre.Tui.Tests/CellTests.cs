@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 namespace Spectre.Tui.Tests;
 
 public sealed class CellTests

@@ -1,3 +1,4 @@
+using Spectre.Console;
 using Spectre.Tui;
 
 namespace Sandbox;

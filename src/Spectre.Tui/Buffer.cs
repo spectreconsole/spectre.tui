@@ -79,16 +79,16 @@ internal static class BufferExtensions
         {
             return Filled(region, new Cell());
         }
+    }
 
-        private static Buffer Filled(Rectangle area, Cell prototype)
+    private static Buffer Filled(Rectangle area, Cell prototype)
+    {
+        var cells = new Cell[area.CalculateArea()];
+        for (var index = 0; index < cells.Length; index++)
         {
-            var cells = new Cell[area.CalculateArea()];
-            for (var index = 0; index < cells.Length; index++)
-            {
-                cells[index] = prototype.Clone();
-            }
-
-            return new Buffer(area, cells);
+            cells[index] = prototype.Clone();
         }
+
+        return new Buffer(area, cells);
     }
 }

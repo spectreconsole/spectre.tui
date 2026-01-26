@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 namespace Spectre.Tui.Tests;
 
 public sealed class TextSpanTests
@@ -21,7 +23,7 @@ public sealed class TextSpanTests
             var span = new TextSpan("Hello World", Color.Red);
 
             // Then
-            span.Style.ShouldBe(new Style
+            span.Style.ShouldBe(new Appearance
             {
                 Foreground = Color.Red
             });

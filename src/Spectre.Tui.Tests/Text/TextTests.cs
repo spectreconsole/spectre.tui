@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 namespace Spectre.Tui.Tests;
 
 public sealed class TextTests
@@ -22,7 +24,7 @@ public sealed class TextTests
 
             // Then
             text.Lines.Count.ShouldBe(1);
-            text.Style.ShouldBe(new Style
+            text.Style.ShouldBe(new Appearance
             {
                 Foreground = Color.Red,
             });
@@ -74,8 +76,7 @@ public sealed class TextTests
         {
             // Given
             var fixture = new TuiFixture(
-                new AnsiTestTerminal(
-                    ColorSystem.TrueColor));
+                new AnsiTestTerminal());
 
             // When
             var result = fixture.Render(ctx =>
@@ -84,7 +85,7 @@ public sealed class TextTests
             });
 
             // Then
-            result.ShouldBe("\e[1;1H\e[0m\e[38;5;11mHello\e[1;7H\e[0m\e[mWorld");
+            result.ShouldBe("\e[1;1H\e[0m\e[38;5;11mHello\e[1;7H\e[0mWorld");
         }
     }
 }

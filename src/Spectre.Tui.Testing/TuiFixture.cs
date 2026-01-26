@@ -19,21 +19,13 @@ public sealed class TuiFixture
 
     public string Render(IWidget widget)
     {
-        _renderer.Draw((frame, _) =>
-        {
-            frame.Render(widget);
-        });
-
+        _renderer.Draw((frame, _) => frame.Render(widget));
         return _terminal.Output;
     }
 
     public string Render(Action<RenderContext> action)
     {
-        _renderer.Draw((frame, _) =>
-        {
-            action(frame);
-        });
-
+        _renderer.Draw((frame, _) => action(frame));
         return _terminal.Output;
     }
 }

@@ -3,7 +3,7 @@ namespace Spectre.Tui;
 [PublicAPI]
 public sealed record Text : IWidget
 {
-    public Style? Style { get; set; }
+    public Appearance? Style { get; set; }
     public List<TextLine> Lines { get; } = [];
 
     public Text()
@@ -31,7 +31,7 @@ public sealed record Text : IWidget
         return Lines.Count;
     }
 
-    public void Append(string text, Style? style)
+    public void Append(string text, Appearance? style)
     {
         foreach (var (_, first, _, part) in text.SplitLines().Enumerate())
         {
@@ -55,7 +55,7 @@ public sealed record Text : IWidget
                 {
                     foreach (var span in part.SplitWords())
                     {
-                        line.Spans.Add(new TextSpan(span, style ?? Tui.Style.Plain));
+                        line.Spans.Add(new TextSpan(span, style ?? Tui.Appearance.Plain));
                     }
                 }
             }
@@ -72,7 +72,7 @@ public sealed record Text : IWidget
                 {
                     foreach (var span in part.SplitWords())
                     {
-                        line.Spans.Add(new TextSpan(span, style ?? Tui.Style.Plain));
+                        line.Spans.Add(new TextSpan(span, style ?? Tui.Appearance.Plain));
                     }
                 }
 
@@ -104,17 +104,24 @@ public static class TextExtensions
 {
     extension(Text)
     {
-        public static Text FromMarkup(string text, Style? style = null)
+        public static Text FromMarkup(string text, Appearance? appearance = null)
         {
-            return MarkupParser.Parse(text, style);
+            var result = new Text();
+            var style = appearance?.ToStyle();
+            foreach (var line in AnsiMarkup.Parse(text, style))
+            {
+                result.Append(line.Text, line.Style);
+            }
+
+            return result;
         }
 
-        public static Text FromString(string text, Style? style = null)
+        public static Text FromString(string text, Appearance? appearance = null)
         {
-            List<TextLine> lines = [.. text.SplitLines().Select(line => TextLine.FromString(line, style))];
+            List<TextLine> lines = [.. text.SplitLines().Select(line => TextLine.FromString(line, appearance))];
             return new Text(lines)
             {
-                Style = style
+                Style = appearance
             };
         }
     }

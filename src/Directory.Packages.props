@@ -10,6 +10,7 @@
     <PackageVersion Include="Polyfill" Version="8.9.0" />
     <PackageVersion Include="Roslynator.Analyzers" PrivateAssets="All" Version="4.14.1" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
+    <PackageVersion Include="Spectre.Console.Ansi" Version="0.54.1-alpha.0.33" />
     <PackageVersion Include="Spectre.Verify.Extensions" Version="28.16.0" />
     <PackageVersion Include="System.Memory" Version="4.6.3" />
     <PackageVersion Include="Verify.Xunit" Version="31.8.0" />

@@ -1,20 +1,16 @@
 namespace Spectre.Tui.Ansi;
 
-internal sealed class WindowsTerminal : AnsiTerminal
+internal sealed class WindowsTerminal(AnsiCapabilities capabilities)
+    : AnsiTerminal(capabilities)
 {
-    public WindowsTerminal(ColorSystem colors)
-        : base(colors)
-    {
-    }
-
     protected override void Flush(string buffer)
     {
-        Console.Write(buffer);
+        System.Console.Write(buffer);
     }
 
     public override Size GetSize()
     {
         // TODO: Use Win32 API to get console size
-        return new Size(Console.WindowWidth, Console.WindowHeight);
+        return new Size(System.Console.WindowWidth, System.Console.WindowHeight);
     }
 }

@@ -11,7 +11,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Wcwidth.Sources"/>
+    <PackageReference Include="Spectre.Console.Ansi" />
+    <PackageReference Include="Wcwidth.Sources" />
   </ItemGroup>
 
   <ItemGroup>

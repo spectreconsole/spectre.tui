@@ -27,7 +27,7 @@ internal static class StringExtensions
                 }
             }
 
-            return result.ToArray();
+            return [.. result];
 
             static string Read(StringBuffer reader, Func<char, bool> criteria)
             {
@@ -45,13 +45,6 @@ internal static class StringExtensions
 
                 return buffer.ToString();
             }
-        }
-
-        private string NormalizeNewLines()
-        {
-            return text == null
-                ? string.Empty
-                : text.Replace("\r\n", "\n", StringComparison.Ordinal);
         }
 
         public int GetCellWidth()
@@ -72,5 +65,12 @@ internal static class StringExtensions
                 yield return graphemes.GetTextElement();
             }
         }
+    }
+
+    private static string NormalizeNewLines(string? text)
+    {
+        return text == null
+            ? string.Empty
+            : text.Replace("\r\n", "\n", StringComparison.Ordinal);
     }
 }

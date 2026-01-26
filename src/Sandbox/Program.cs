@@ -1,3 +1,5 @@
+using System.Text;
+using Spectre.Console;
 using Spectre.Tui;
 
 namespace Sandbox;
@@ -13,6 +15,7 @@ public static class Program
         renderer.SetTargetFps(60);
 
         Console.Title = "Spectre.Tui Sandbox";
+        Console.OutputEncoding = Encoding.Unicode;
 
         while (running)
         {
@@ -36,9 +39,10 @@ public static class Program
 
                 // Some text
                 ctx.Render(Text.FromMarkup(
-                    """
+                    $"""
                     नमस्ते [red]Happy Holidays[/] 🎅 Happy Holidays\n[u]Happy Holidays[/]
                     Happy Holidays [yellow bold]Happy Holidays[/] Happy Holidays Happy Holidays
+                    {ctx.Viewport.Width} x {ctx.Viewport.Height}
                     """, Color.Green),
                     inner.Inflate(-1, -1));
             });

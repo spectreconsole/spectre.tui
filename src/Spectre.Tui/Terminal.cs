@@ -5,21 +5,17 @@ public static class Terminal
 {
     public static ITerminal Create()
     {
-        // Do we support ANSI?
-        var (supportsAnsi, legacyWindowsTerm) = AnsiDetector.Detect(false, true);
-        if (!supportsAnsi || legacyWindowsTerm)
+        var caps = AnsiCapabilities.Create(System.Console.Out);
+        if (!caps.Ansi)
         {
-            throw new InvalidOperationException("The current terminal does not support VT codes");
+            throw new NotSupportedException("Your terminal does not support ANSI");
         }
-
-        // What colors do we support?
-        var colors = ColorSystemDetector.Detect();
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            return new WindowsTerminal(colors);
+            return new WindowsTerminal(caps);
         }
 
-        return new UnixTerminal(colors);
+        return new UnixTerminal(caps);
     }
 }
