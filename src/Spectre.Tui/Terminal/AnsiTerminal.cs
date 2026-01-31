@@ -147,7 +147,7 @@ public abstract class AnsiTerminal : ITerminal
             // Background
             if (_current.Value.Background != Color.Default)
             {
-                writer.Background(_current.Value.Foreground);
+                writer.Background(_current.Value.Background);
             }
         }
     }
