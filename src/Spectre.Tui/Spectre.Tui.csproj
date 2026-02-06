@@ -12,7 +12,7 @@
   
   <ItemGroup>
     <PackageReference Include="Spectre.Console.Ansi" />
-    <PackageReference Include="Wcwidth.Sources" />
+    <PackageReference Include="Wcwidth.Sources" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
