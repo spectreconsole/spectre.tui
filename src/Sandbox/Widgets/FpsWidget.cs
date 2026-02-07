@@ -5,8 +5,7 @@ namespace Sandbox;
 
 public sealed class FpsWidget : IWidget
 {
-    private readonly string _text;
-    private readonly Appearance _style;
+    private readonly Text _text;
 
     public FpsWidget(
         TimeSpan elapsed,
@@ -15,21 +14,21 @@ public sealed class FpsWidget : IWidget
     {
         var fps = TimeSpan.FromSeconds(1) / elapsed;
 
-        _text = $"[yellow]FPS:[/] {fps:0.000}";
-        _style = new Appearance
-        {
-            Foreground = foreground ?? Color.Default,
-            Background = background ?? Color.Default,
-        };
+        _text = Text.FromMarkup(
+            $"[yellow]FPS:[/] {fps:0.000}",
+            new Appearance
+            {
+                Foreground = foreground ?? Color.Default,
+                Background = background ?? Color.Default,
+            });
     }
 
     public void Render(RenderContext context)
     {
-        var text = Text.FromMarkup(_text, _style);
-        var width = text.GetWidth();
+        var width = _text.GetWidth();
 
         context.Render(
-            text,
+            _text,
             new Rectangle(
                 (context.Viewport.Width - width) / 2,
                 context.Viewport.Height / 2,
