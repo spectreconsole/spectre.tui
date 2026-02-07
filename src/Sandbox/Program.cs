@@ -22,14 +22,14 @@ public static class Program
             renderer.Draw((ctx, elapsed) =>
             {
                 // Outer box
-                ctx.Render(new BoxWidget(Color.Red));
+                ctx.Render(new BoxWidget(Color.Red) { Border = Border.Double });
                 ctx.Render(new ClearWidget('O'), ctx.Viewport.Inflate(-1, -1));
 
                 // Inner box
                 var inner = ctx.Viewport.Inflate(new Size(-10, -5));
                 ctx.Render(new BoxWidget(Color.Green), inner);
                 ctx.Render(
-                    new ClearWidget('.', Decoration.Bold),
+                    new ClearWidget('.', new Style(decoration: Decoration.Bold)),
                     inner.Inflate(-1, -1));
 
                 // FPS

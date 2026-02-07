@@ -1,13 +1,8 @@
-using Spectre.Console;
-using Spectre.Tui;
-
-namespace Sandbox;
+namespace Spectre.Tui;
 
 public sealed class ClearWidget(
     char? symbol = null,
-    Decoration decoration = Decoration.None,
-    Color? foreground = null,
-    Color? background = null) : IWidget
+    Appearance? style = null) : IWidget
 {
     public void Render(RenderContext context)
     {
@@ -17,9 +12,7 @@ public sealed class ClearWidget(
             {
                 context.GetCell(x, y)?
                     .SetSymbol(symbol ?? ' ')
-                    .SetDecoration(decoration)
-                    .SetForeground(foreground)
-                    .SetBackground(background);
+                    .SetStyle(style);
             }
         }
     }
