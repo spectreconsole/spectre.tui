@@ -5,10 +5,10 @@ namespace Spectre.Tui;
 public readonly struct Rectangle(int x, int y, int width, int height)
     : IEquatable<Rectangle>
 {
-    public int X { get; } = x;
-    public int Y { get; } = y;
-    public int Width { get; } = width;
-    public int Height { get; } = height;
+    public int X { get; init; } = x;
+    public int Y { get; init; } = y;
+    public int Width { get; init; } = width;
+    public int Height { get; init; } = height;
 
     public int Top => Y;
     public int Bottom => Y + Height;

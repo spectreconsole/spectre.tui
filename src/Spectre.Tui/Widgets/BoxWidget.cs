@@ -1,7 +1,7 @@
 namespace Spectre.Tui;
 
 [PublicAPI]
-public sealed class BoxWidget(Appearance? style = null) : IWidget
+public sealed class BoxWidget(Style? style = null) : IWidget
 {
     public Border Border { get; set; } = Border.Rounded;
 

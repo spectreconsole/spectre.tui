@@ -24,7 +24,7 @@ public sealed class TextLineTests
             var line = TextLine.FromString("Hello\nWorld", Color.Red);
 
             // Then
-            line.Style.ShouldBe(new Appearance
+            line.Style.ShouldBe(new Style
             {
                 Foreground = Color.Red,
             });

@@ -33,7 +33,9 @@ internal sealed class Buffer
     {
         foreach (var cell in _cells)
         {
-            cell.Reset();
+            cell
+                .SetSymbol(Cell.EmptySymbol)
+                .SetStyle(Style.Plain);
         }
     }
 

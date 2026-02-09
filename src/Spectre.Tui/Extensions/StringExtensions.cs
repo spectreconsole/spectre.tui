@@ -2,6 +2,17 @@ using Wcwidth;
 
 namespace Spectre.Tui;
 
+internal static class CharExtensions
+{
+    extension(char c)
+    {
+        public int GetCellWidth()
+        {
+            return UnicodeCalculator.GetWidth(c);
+        }
+    }
+}
+
 internal static class StringExtensions
 {
     extension(string? text)

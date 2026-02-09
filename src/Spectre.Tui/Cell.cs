@@ -4,10 +4,10 @@ namespace Spectre.Tui;
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
 public sealed class Cell : IEquatable<Cell>
 {
-    private const string EmptySymbol = " ";
+    internal const string EmptySymbol = " ";
 
     public string Symbol { get; private set; } = EmptySymbol;
-    public Appearance Style { get; set; } = Appearance.Plain;
+    public Style Style { get; set; } = Style.Plain;
 
     public Decoration Decoration => Style.Decoration;
     public Color Foreground => Style.Foreground;
@@ -25,9 +25,9 @@ public sealed class Cell : IEquatable<Cell>
         return this;
     }
 
-    public Cell SetStyle(Appearance? style)
+    public Cell SetStyle(Style? style)
     {
-        Style = style ?? Appearance.Plain;
+        Style = style ?? Style.Plain;
         return this;
     }
 
@@ -83,12 +83,6 @@ public sealed class Cell : IEquatable<Cell>
     public override int GetHashCode()
     {
         return HashCode.Combine(Symbol, (int)Decoration, Foreground, Background);
-    }
-
-    public void Reset()
-    {
-        Symbol = EmptySymbol;
-        Style = Appearance.Plain;
     }
 }
 
