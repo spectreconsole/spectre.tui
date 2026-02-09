@@ -15,7 +15,7 @@ public readonly struct Rectangle(int x, int y, int width, int height)
     public int Left => X;
     public int Right => X + Width;
 
-    public bool IsEmpty => X == 0 || Y == 0;
+    public bool IsEmpty => Width == 0 || Height == 0;
 
     public bool Equals(Rectangle other)
     {
@@ -80,17 +80,15 @@ public readonly struct Rectangle(int x, int y, int width, int height)
 
     public Rectangle Intersect(Rectangle other)
     {
-        if (!Intersects(other))
-        {
-            throw new InvalidOperationException("The two rectangles do not intersect");
-        }
-
         var right = Math.Min(X + Width, other.X + other.Width);
         var left = Math.Max(X, other.X);
         var top = Math.Max(Y, other.Y);
         var bottom = Math.Min(Y + Height, other.Y + other.Height);
 
-        return new Rectangle(left, top, right - left, bottom - top);
+        return new Rectangle(
+            left, top,
+            (right - left).EnsurePositive(),
+            (bottom - top).EnsurePositive());
     }
 
     public Rectangle Offset(int offsetX, int offsetY)

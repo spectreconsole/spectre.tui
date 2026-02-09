@@ -125,11 +125,11 @@ public sealed class RectangleTests
             var r2 = new Rectangle(11, 11, 10, 10);
 
             // When
-            var result = Record.Exception(() => r1.Intersect(r2));
+            var result = r1.Intersect(r2);
 
             // Then
-            result.ShouldBeOfType<InvalidOperationException>()
-                .Message.ShouldBe("The two rectangles do not intersect");
+            result.IsEmpty.ShouldBeTrue();
+            result.ShouldBe(new Rectangle(11, 11, 0, 0));
         }
 
         [Fact]

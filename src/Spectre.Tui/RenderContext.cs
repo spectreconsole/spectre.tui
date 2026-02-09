@@ -33,7 +33,7 @@ public static class RenderContextExtensions
 
         public void Render(IWidget widget, Rectangle area)
         {
-            if (area.Width == 0 || area.Height == 0)
+            if (area.IsEmpty)
             {
                 return;
             }
@@ -42,6 +42,13 @@ public static class RenderContextExtensions
                 new Rectangle(
                     context.Screen.X + area.X, context.Screen.Y + area.Y,
                     area.Width, area.Height));
+
+            // The provided screen does not intersect with
+            // the area. We can't render anything in this rectangle.
+            if (screen.IsEmpty)
+            {
+                return;
+            }
 
             var viewport = new Rectangle(0, 0, screen.Width, screen.Height);
             widget.Render(context with
