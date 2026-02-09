@@ -1,5 +1,6 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 public sealed class BoxWidget(Appearance? style = null) : IWidget
 {
     public Border Border { get; set; } = Border.Rounded;
@@ -7,6 +8,34 @@ public sealed class BoxWidget(Appearance? style = null) : IWidget
     public void Render(RenderContext context)
     {
         var area = context.Viewport;
+
+        if (area.Height == 0)
+        {
+            return;
+        }
+
+        if (area.Height == 1)
+        {
+            for (var x = 0; x < area.Width; x++)
+            {
+                if (x == 0)
+                {
+                    context.SetSymbol(x, 0, Border.VerticalLeft);
+                }
+                else if (x == area.Width - 1)
+                {
+                    context.SetSymbol(x, 0, Border.VerticalRight);
+                }
+                else
+                {
+                    context.SetSymbol(x, 0, Border.HorizontalTop);
+                }
+
+                context.SetStyle(x, 0, style);
+            }
+
+            return;
+        }
 
         // Top/Bottom
         for (var x = 0; x < area.Width; x++)

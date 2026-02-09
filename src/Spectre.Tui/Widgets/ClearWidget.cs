@@ -1,5 +1,6 @@
 namespace Spectre.Tui;
 
+[PublicAPI]
 public sealed class ClearWidget(
     char? symbol = null,
     Appearance? style = null) : IWidget
