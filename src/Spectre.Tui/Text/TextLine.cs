@@ -3,7 +3,7 @@ namespace Spectre.Tui;
 [PublicAPI]
 public sealed record TextLine
 {
-    public Appearance? Style { get; set; }
+    public Style? Style { get; set; }
     public List<TextSpan> Spans { get; init; } = [];
 
     public TextLine()
@@ -21,6 +21,11 @@ public sealed record TextLine
         Spans = spans;
     }
 
+    public TextLine(IEnumerable<TextSpan> spans)
+    {
+        Spans = [.. spans];
+    }
+
     public int GetWidth()
     {
         return Spans.Sum(segment => segment.GetWidth());
@@ -32,11 +37,23 @@ public sealed record TextLine
     }
 }
 
+[PublicAPI]
 public static class LineExtensions
 {
     extension(TextLine)
     {
-        public static TextLine FromString(string text, Appearance? style = null)
+        public static TextLine FromMarkup(string text, Style? style = null)
+        {
+            return new TextLine(
+                AnsiMarkup
+                    .Parse(text)
+                    .Select(x => new TextSpan(x.Text, x.Style)))
+                {
+                    Style = style,
+                };
+        }
+
+        public static TextLine FromString(string text, Style? style = null)
         {
             return new TextLine(new TextSpan(text))
             {

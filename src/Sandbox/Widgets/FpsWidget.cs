@@ -1,6 +1,3 @@
-using Spectre.Console;
-using Spectre.Tui;
-
 namespace Sandbox;
 
 public sealed class FpsWidget : IWidget
@@ -16,7 +13,7 @@ public sealed class FpsWidget : IWidget
 
         _text = Text.FromMarkup(
             $"[yellow]FPS:[/] {fps:0.000}",
-            new Appearance
+            new Style
             {
                 Foreground = foreground ?? Color.Default,
                 Background = background ?? Color.Default,
