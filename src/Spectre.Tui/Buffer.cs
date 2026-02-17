@@ -1,7 +1,12 @@
 namespace Spectre.Tui;
 
+internal interface IReadOnlyBuffer
+{
+    IReadOnlyCell? GetCell(int x, int y);
+}
+
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
-internal sealed class Buffer
+internal sealed class Buffer : IReadOnlyBuffer
 {
     private Rectangle _screen;
     private Cell[] _cells;
@@ -17,6 +22,11 @@ internal sealed class Buffer
         {
             throw new InvalidOperationException("Mismatch between buffer size and provided area");
         }
+    }
+
+    IReadOnlyCell? IReadOnlyBuffer.GetCell(int x, int y)
+    {
+        return GetCell(x, y);
     }
 
     public Cell? GetCell(int x, int y)

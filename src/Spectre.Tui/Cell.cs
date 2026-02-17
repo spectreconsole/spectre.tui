@@ -1,8 +1,18 @@
 namespace Spectre.Tui;
 
+public interface IReadOnlyCell
+{
+    string Symbol { get; }
+    Style Style { get; }
+
+    Decoration Decoration { get; }
+    Color Foreground { get; }
+    Color Background { get; }
+}
+
 [PublicAPI]
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
-public sealed class Cell : IEquatable<Cell>
+public sealed class Cell : IReadOnlyCell, IEquatable<Cell>
 {
     internal const string EmptySymbol = " ";
 
@@ -33,25 +43,38 @@ public sealed class Cell : IEquatable<Cell>
 
     public Cell SetDecoration(Decoration? decoration)
     {
-        Style = Style with { Decoration = decoration ?? Decoration.None };
+        Style = Style with
+        {
+            Decoration = decoration ?? Decoration.None
+        };
         return this;
     }
 
     public Cell SetForeground(Color? color)
     {
-        Style = Style with { Foreground = color ?? Color.Default };
+        Style = Style with
+        {
+            Foreground = color ?? Color.Default
+        };
         return this;
     }
 
     public Cell SetBackground(Color? color)
     {
-        Style = Style with { Background = color ?? Color.Default };
+        Style = Style with
+        {
+            Background = color ?? Color.Default
+        };
         return this;
     }
 
     public Cell Clone()
     {
-        return new Cell { Symbol = Symbol, Style = Style };
+        return new Cell
+        {
+            Symbol = Symbol,
+            Style = Style
+        };
     }
 
     private string DebuggerDisplay()

@@ -4,13 +4,16 @@ namespace Spectre.Tui;
 public sealed record RenderContext
 {
     private readonly Buffer _buffer;
+    private readonly IReadOnlyBuffer _previousBuffer;
 
     public Rectangle Screen { get; internal init; }
     public Rectangle Viewport { get; internal init; }
 
-    internal RenderContext(Buffer buffer, Rectangle screen, Rectangle viewport)
+    internal RenderContext(Buffer current, Buffer previous, Rectangle screen, Rectangle viewport)
     {
-        _buffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
+        _buffer = current ?? throw new ArgumentNullException(nameof(current));
+        _previousBuffer = previous ?? throw new ArgumentNullException(nameof(previous));
+
         Screen = screen;
         Viewport = viewport;
     }
@@ -18,6 +21,11 @@ public sealed record RenderContext
     public Cell? GetCell(int x, int y)
     {
         return _buffer.GetCell(Screen.X + x, Screen.Y + y);
+    }
+
+    public IReadOnlyCell? GetCellFromPreviousFrame(int x, int y)
+    {
+        return _previousBuffer.GetCell(Screen.X + x, Screen.Y + y);
     }
 
     public void Invalidate()
