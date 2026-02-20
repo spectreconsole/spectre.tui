@@ -48,9 +48,9 @@ public static class LineExtensions
                 AnsiMarkup
                     .Parse(text)
                     .Select(x => new TextSpan(x.Text, x.Style)))
-                {
-                    Style = style,
-                };
+            {
+                Style = style,
+            };
         }
 
         public static TextLine FromString(string text, Style? style = null)

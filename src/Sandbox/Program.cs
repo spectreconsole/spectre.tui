@@ -14,6 +14,11 @@ public static class Program
 
         Console.Title = "Spectre.Tui Sandbox";
         Console.OutputEncoding = Encoding.Unicode;
+        Console.CancelKeyPress += (s, e) =>
+        {
+            e.Cancel = true;
+            running = false;
+        };
 
         var ball = new BallState();
         var todo = new ListWidget<ToDoItem>(
@@ -39,24 +44,34 @@ public static class Program
         {
             renderer.Draw((ctx, elapsed) =>
             {
-                // Outer box
-                ctx.Render(new BoxWidget(Color.Red)
-                {
-                    Border = Border.Double
-                });
-                ctx.Render(new ClearWidget('·'), ctx.Viewport.Inflate(-1, -1));
+                var layout = new Layout("Root")
+                    .SplitRows(
+                        new Layout("Top").Size(1),
+                        new Layout("Middle"),
+                        new Layout("Bottom").Size(1));
 
-                // Ball
-                ball.Update(elapsed, ctx.Viewport.Inflate(-1, -1));
-                ctx.Render(new BallWidget(), ball);
+                var top = layout.GetArea(ctx, "Top");
+                var middle = layout.GetArea(ctx, "Middle");
+                var bottom = layout.GetArea(ctx, "Bottom");
 
                 // FPS
                 ctx.Render(
                     new FpsWidget(elapsed, foreground: Color.Green),
-                    new Rectangle(0, ctx.Screen.Bottom - 1, ctx.Screen.Width, 1));
+                    top);
+
+                // Outer box
+                ctx.Render(new BoxWidget(Color.Red)
+                {
+                    Border = Border.Double,
+                }, middle);
+                ctx.Render(new ClearWidget('╱', Color.Gray), middle.Inflate(-1, -1));
+
+                // Ball
+                ball.Update(elapsed, middle.Inflate(-1, -1));
+                ctx.Render(new BallWidget(), ball);
 
                 // Inner box
-                var inner = ctx.Viewport.Inflate(new Size(-12, -5));
+                var inner = middle.Inflate(new Size(-12, -5));
                 ctx.Render(new BoxWidget(Color.Green), inner);
                 ctx.Render(
                     new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
@@ -64,6 +79,9 @@ public static class Program
 
                 // To-Do list
                 ctx.Render(todo, inner.Inflate(-1, -1));
+
+                // Help
+                ctx.Render(Text.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move  [bold][[Space]][/]:Select", new Style(Color.Gray)), bottom);
             });
 
             // Handle input

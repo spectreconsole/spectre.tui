@@ -4,8 +4,19 @@ internal static class EnumerableExtensions
 {
     extension<T>(IEnumerable<T> source)
     {
+        // List.Reverse clashes with IEnumerable<T>.Reverse, so this method only exists
+        // so we won't have to cast List<T> to IEnumerable<T>.
+        public IEnumerable<T> ReverseEnumerable()
+        {
+            ArgumentNullException.ThrowIfNull(source);
+
+            return source.Reverse();
+        }
+
         public void ForEach(Action<T> action)
         {
+            ArgumentNullException.ThrowIfNull(source);
+
             foreach (var item in source)
             {
                 action(item);
@@ -16,6 +27,12 @@ internal static class EnumerableExtensions
         {
             ArgumentNullException.ThrowIfNull(source);
             return Enumerate(source.GetEnumerator());
+        }
+
+        public IEnumerable<(T First, TSecond Second, TThird Third)> ZipThree<TSecond, TThird>(IEnumerable<TSecond> second, IEnumerable<TThird> third)
+        {
+            return source.Zip(second, (a, b) => (a, b))
+                .Zip(third, (a, b) => (a.a, a.b, b));
         }
     }
 
