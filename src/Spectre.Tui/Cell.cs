@@ -1,13 +1,23 @@
 namespace Spectre.Tui;
 
+public interface IReadOnlyCell
+{
+    string Symbol { get; }
+    Style Style { get; }
+
+    Decoration Decoration { get; }
+    Color Foreground { get; }
+    Color Background { get; }
+}
+
 [PublicAPI]
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
-public sealed class Cell : IEquatable<Cell>
+public sealed class Cell : IReadOnlyCell, IEquatable<Cell>
 {
-    private const string EmptySymbol = " ";
+    internal const string EmptySymbol = " ";
 
     public string Symbol { get; private set; } = EmptySymbol;
-    public Appearance Style { get; set; } = Appearance.Plain;
+    public Style Style { get; set; } = Style.Plain;
 
     public Decoration Decoration => Style.Decoration;
     public Color Foreground => Style.Foreground;
@@ -25,33 +35,46 @@ public sealed class Cell : IEquatable<Cell>
         return this;
     }
 
-    public Cell SetStyle(Appearance? style)
+    public Cell SetStyle(Style? style)
     {
-        Style = style ?? Appearance.Plain;
+        Style = style ?? Style.Plain;
         return this;
     }
 
     public Cell SetDecoration(Decoration? decoration)
     {
-        Style = Style with { Decoration = decoration ?? Decoration.None };
+        Style = Style with
+        {
+            Decoration = decoration ?? Decoration.None
+        };
         return this;
     }
 
     public Cell SetForeground(Color? color)
     {
-        Style = Style with { Foreground = color ?? Color.Default };
+        Style = Style with
+        {
+            Foreground = color ?? Color.Default
+        };
         return this;
     }
 
     public Cell SetBackground(Color? color)
     {
-        Style = Style with { Background = color ?? Color.Default };
+        Style = Style with
+        {
+            Background = color ?? Color.Default
+        };
         return this;
     }
 
     public Cell Clone()
     {
-        return new Cell { Symbol = Symbol, Style = Style };
+        return new Cell
+        {
+            Symbol = Symbol,
+            Style = Style
+        };
     }
 
     private string DebuggerDisplay()
@@ -83,12 +106,6 @@ public sealed class Cell : IEquatable<Cell>
     public override int GetHashCode()
     {
         return HashCode.Combine(Symbol, (int)Decoration, Foreground, Background);
-    }
-
-    public void Reset()
-    {
-        Symbol = EmptySymbol;
-        Style = Appearance.Plain;
     }
 }
 

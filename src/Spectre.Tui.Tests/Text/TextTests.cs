@@ -24,7 +24,7 @@ public sealed class TextTests
 
             // Then
             text.Lines.Count.ShouldBe(1);
-            text.Style.ShouldBe(new Appearance
+            text.Style.ShouldBe(new Style
             {
                 Foreground = Color.Red,
             });

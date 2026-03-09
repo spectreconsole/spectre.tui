@@ -63,6 +63,11 @@ public sealed class Line
         public const char Cross = '┼';
         public const char DoubleCross = '╬';
         public const char BoldCross = '╋';
+
+        public const char OneEightTop = '▔';
+        public const char OneEightBottom = '▁';
+        public const char OneEightLeft = '▏';
+        public const char OneEightRight = '▕';
     }
 
     public static Line Plain { get; } = new Line

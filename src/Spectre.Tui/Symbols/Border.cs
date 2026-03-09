@@ -30,4 +30,28 @@ public sealed class Border
     public static Border Rounded { get; } = FromLine(Line.Rounded);
     public static Border Double { get; } = FromLine(Line.Double);
     public static Border Bold { get; } = FromLine(Line.Bold);
+
+    public static Border McGuganWide { get; } = new Border
+    {
+        TopLeft = Line.Symbols.OneEightBottom,
+        TopRight = Line.Symbols.OneEightBottom,
+        BottomLeft = Line.Symbols.OneEightTop,
+        BottomRight = Line.Symbols.OneEightTop,
+        VerticalLeft = Line.Symbols.OneEightLeft,
+        VerticalRight = Line.Symbols.OneEightRight,
+        HorizontalTop = Line.Symbols.OneEightBottom,
+        HorizontalBottom = Line.Symbols.OneEightTop,
+    };
+
+    public static Border McGuganTall { get; } = new Border
+    {
+        TopLeft = Line.Symbols.OneEightRight,
+        TopRight = Line.Symbols.OneEightLeft,
+        BottomLeft = Line.Symbols.OneEightRight,
+        BottomRight = Line.Symbols.OneEightLeft,
+        VerticalLeft = Line.Symbols.OneEightRight,
+        VerticalRight = Line.Symbols.OneEightLeft,
+        HorizontalTop = Line.Symbols.OneEightTop,
+        HorizontalBottom = Line.Symbols.OneEightBottom,
+    };
 }

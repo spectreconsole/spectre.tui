@@ -60,7 +60,7 @@ public sealed class Renderer
         _lastRender = _stopwatch.Elapsed;
 
         // Fill out the current frame
-        var frame = new RenderContext(_buffers[_bufferIndex], _viewport, _viewport);
+        var frame = new RenderContext(_buffers[_bufferIndex], _buffers[1 - _bufferIndex], _viewport, _viewport);
         callback(frame, elapsedSinceLastRender);
 
         // Calculate the diff between the back and front buffer
@@ -73,7 +73,8 @@ public sealed class Renderer
         foreach (var (x, y, cell) in diff)
         {
             // Do we need to move within the buffer?
-            if (lastPosition == null || !(x == lastPosition.Value.X + 1 && y == lastPosition.Value.Y))
+            var movedForward = lastPosition != null && x == lastPosition.Value.X + 1 && y == lastPosition.Value.Y;
+            if (!movedForward)
             {
                 _terminal.MoveTo(x, y);
             }

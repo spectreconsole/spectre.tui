@@ -66,6 +66,38 @@ public sealed class BorderTests
             """);
     }
 
+    [Fact]
+    public void McGuganWide()
+    {
+        // Given, When
+        var result = RenderBox(Border.McGuganWide);
+
+        // Then
+        result.ShouldBe(
+            """
+            ▁▁▁▁
+            ▏  ▕
+            ▏  ▕
+            ▔▔▔▔
+            """);
+    }
+
+    [Fact]
+    public void McGuganTall()
+    {
+        // Given, When
+        var result = RenderBox(Border.McGuganTall);
+
+        // Then
+        result.ShouldBe(
+            """
+            ▕▔▔▏
+            ▕  ▏
+            ▕  ▏
+            ▕▁▁▏
+            """);
+    }
+
     private static string RenderBox(Border border)
     {
         return string.Format(

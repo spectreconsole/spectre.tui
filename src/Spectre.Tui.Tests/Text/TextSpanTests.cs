@@ -23,9 +23,9 @@ public sealed class TextSpanTests
             var span = new TextSpan("Hello World", Color.Red);
 
             // Then
-            span.Style.ShouldBe(new Appearance
+            span.Style.ShouldBe(new Style
             {
-                Foreground = Color.Red
+                Foreground = Color.Red,
             });
         }
 

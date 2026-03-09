@@ -19,12 +19,6 @@ public abstract class AnsiTerminal : ITerminal
         _writer = new AnsiWriter(new StringWriter(_buffer), capabilities);
         _state = new AnsiState(_writer);
 
-        // TODO: Remove
-        // _writer
-        //     .EnterAltScreen()
-        //     .CursorHome()
-        //     .HideCursor();
-
         Mode = mode ?? throw new ArgumentNullException(nameof(mode));
         Mode.OnAttach(_writer);
         Flush();
@@ -42,11 +36,6 @@ public abstract class AnsiTerminal : ITerminal
     {
         if (disposing)
         {
-            // TODO: Remove
-            // _writer
-            //     .ExitAltScreen()
-            //     .ShowCursor();
-
             Mode.OnDetach(_writer);
             Flush();
         }
@@ -66,9 +55,6 @@ public abstract class AnsiTerminal : ITerminal
 
     public void Clear()
     {
-        // TODO: Remove
-        // _writer.EraseInDisplay(2);
-
         Mode.Clear(_writer);
     }
 
@@ -76,9 +62,6 @@ public abstract class AnsiTerminal : ITerminal
 
     public void MoveTo(int x, int y)
     {
-        // TODO: Remove
-        // _writer.CursorPosition(y + 1, x + 1);
-
         Mode.MoveTo(x, y, _writer);
 
         // Invalidate tracked SGR state. InlineMode.MoveTo uses \e[u
@@ -113,8 +96,8 @@ public abstract class AnsiTerminal : ITerminal
 
     private sealed class AnsiState(AnsiWriter writer)
     {
-        private Appearance? _current;
-        private Appearance? _previous;
+        private Style? _current;
+        private Style? _previous;
 
         public bool Update(Cell cell)
         {

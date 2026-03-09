@@ -4,13 +4,16 @@ namespace Spectre.Tui;
 public sealed record RenderContext
 {
     private readonly Buffer _buffer;
+    private readonly IReadOnlyBuffer _previousBuffer;
 
     public Rectangle Screen { get; internal init; }
     public Rectangle Viewport { get; internal init; }
 
-    internal RenderContext(Buffer buffer, Rectangle screen, Rectangle viewport)
+    internal RenderContext(Buffer current, Buffer previous, Rectangle screen, Rectangle viewport)
     {
-        _buffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
+        _buffer = current ?? throw new ArgumentNullException(nameof(current));
+        _previousBuffer = previous ?? throw new ArgumentNullException(nameof(previous));
+
         Screen = screen;
         Viewport = viewport;
     }
@@ -18,6 +21,16 @@ public sealed record RenderContext
     public Cell? GetCell(int x, int y)
     {
         return _buffer.GetCell(Screen.X + x, Screen.Y + y);
+    }
+
+    public IReadOnlyCell? GetCellFromPreviousFrame(int x, int y)
+    {
+        return _previousBuffer.GetCell(Screen.X + x, Screen.Y + y);
+    }
+
+    public void Invalidate()
+    {
+        _buffer.Resize(Screen);
     }
 }
 
@@ -28,34 +41,35 @@ public static class RenderContextExtensions
     {
         public void Render(IWidget widget)
         {
-            context.Render(widget, context.Viewport);
+            widget.Render(context);
         }
 
         public void Render(IWidget widget, Rectangle area)
         {
-            if (area.Width == 0 || area.Height == 0)
+            if (context.CreateAreaRenderContext(area, out var areaContext))
             {
-                return;
+                widget.Render(areaContext);
             }
-
-            var screen = context.Screen.Intersect(
-                new Rectangle(
-                    context.Screen.X + area.X,
-                    context.Screen.Y + area.Y,
-                    area.Width,
-                    area.Height));
-
-            var viewport = new Rectangle(0, 0, screen.Width, screen.Height);
-            widget.Render(context with
-            {
-                Screen = screen,
-                Viewport = viewport
-            });
         }
 
-        public Position SetString(int x, int y, string text, Style? style, int? maxWidth = null)
+        public void Render<TState>(IStatefulWidget<TState> widget, TState state)
         {
-            var remainingWidth = Math.Min(context.Viewport.Right - x, maxWidth ?? context.Viewport.Right);
+            widget.Render(context, state);
+        }
+
+        public void Render<TState>(IStatefulWidget<TState> widget, Rectangle area, TState state)
+        {
+            if (context.CreateAreaRenderContext(area, out var areaContext))
+            {
+                widget.Render(areaContext, state);
+            }
+        }
+
+        public Position SetString(int x, int y, string text, Style? style = null, int? maxWidth = null)
+        {
+            var remainingWidth = Math.Min(
+                context.Viewport.Right - x,
+                maxWidth ?? context.Viewport.Right);
 
             var graphemes = text.Graphemes()
                 .Select(c => (String: c, Width: c.GetCellWidth()))
@@ -75,7 +89,7 @@ public static class RenderContextExtensions
                 // Reset the next following cells
                 while (x < next)
                 {
-                    context.GetCell(x, y)?.Reset();
+                    context.GetCell(x, y)?.SetSymbol("");
                     x++;
                 }
             }
@@ -135,9 +149,9 @@ public static class RenderContextExtensions
             }
 
             var intersected = context.Viewport.Intersect(area);
-            for (var y = 0; y < intersected.Height; y++)
+            for (var y = intersected.Y; y < intersected.Y + intersected.Height; y++)
             {
-                for (var x = 0; x < intersected.Width; x++)
+                for (var x = intersected.X; x < intersected.X + intersected.Width; x++)
                 {
                     context.GetCell(x, y)?.SetStyle(style);
                 }
@@ -152,6 +166,36 @@ public static class RenderContextExtensions
         public void SetBackground(int x, int y, Color? color)
         {
             context.GetCell(x, y)?.SetBackground(color);
+        }
+
+        private bool CreateAreaRenderContext(Rectangle area, [NotNullWhen(true)] out RenderContext? result)
+        {
+            if (area.IsEmpty)
+            {
+                result = null;
+                return false;
+            }
+
+            var screen = context.Screen.Intersect(
+                new Rectangle(
+                    context.Screen.X + area.X, context.Screen.Y + area.Y,
+                    area.Width, area.Height));
+
+            // The provided screen does not intersect with
+            // the area. We can't render anything in this rectangle.
+            if (screen.IsEmpty)
+            {
+                result = null;
+                return false;
+            }
+
+            result = context with
+            {
+                Screen = screen,
+                Viewport = new Rectangle(0, 0, screen.Width, screen.Height)
+            };
+
+            return true;
         }
     }
 }

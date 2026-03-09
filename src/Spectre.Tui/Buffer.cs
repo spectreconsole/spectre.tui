@@ -1,7 +1,12 @@
 namespace Spectre.Tui;
 
+internal interface IReadOnlyBuffer
+{
+    IReadOnlyCell? GetCell(int x, int y);
+}
+
 [DebuggerDisplay("{DebuggerDisplay(),nq}")]
-internal sealed class Buffer
+internal sealed class Buffer : IReadOnlyBuffer
 {
     private Rectangle _screen;
     private Cell[] _cells;
@@ -19,6 +24,11 @@ internal sealed class Buffer
         }
     }
 
+    IReadOnlyCell? IReadOnlyBuffer.GetCell(int x, int y)
+    {
+        return GetCell(x, y);
+    }
+
     public Cell? GetCell(int x, int y)
     {
         if (x < 0 || y < 0 || x >= _screen.Width || y >= _screen.Height)
@@ -33,7 +43,9 @@ internal sealed class Buffer
     {
         foreach (var cell in _cells)
         {
-            cell.Reset();
+            cell
+                .SetSymbol(Cell.EmptySymbol)
+                .SetStyle(Style.Plain);
         }
     }
 
