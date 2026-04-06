@@ -46,6 +46,11 @@ public sealed class ListWidget<TItem> : IWidget
 
     public void Render(RenderContext context)
     {
+        if (Items.Count == 0)
+        {
+            return;
+        }
+
         var viewport = context.Viewport;
 
         // Ensure the selected index is within range
