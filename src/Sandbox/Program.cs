@@ -83,6 +83,8 @@ public static class Program
                 // To-Do list
                 ctx.Render(todo, inner.Inflate(-2, -2));
 
+                ctx.SetCursorPosition(new Position(10, 10));
+
                 // Help
                 ctx.Render(Text.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move  [bold][[Space]][/]:Select", new Style(Color.Gray)), bottom);
             });

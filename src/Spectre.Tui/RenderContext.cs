@@ -9,11 +9,34 @@ public sealed record RenderContext
     public Rectangle Screen { get; internal init; }
     public Rectangle Viewport { get; internal init; }
 
-    internal RenderContext(Buffer current, Buffer previous, Rectangle screen, Rectangle viewport)
+    internal RenderContext? Parent { get; init; }
+    internal Position? CursorPosition
+    {
+        get
+        {
+            return Parent != null ? Parent.CursorPosition : field;
+        }
+        set
+        {
+            if (Parent != null)
+            {
+                Parent.CursorPosition = value;
+                return;
+            }
+
+            field = value;
+        }
+    }
+
+    internal RenderContext(
+        RenderContext? parent,
+        Buffer current, Buffer previous,
+        Rectangle screen, Rectangle viewport)
     {
         _buffer = current ?? throw new ArgumentNullException(nameof(current));
         _previousBuffer = previous ?? throw new ArgumentNullException(nameof(previous));
 
+        Parent = parent;
         Screen = screen;
         Viewport = viewport;
     }
@@ -168,6 +191,11 @@ public static class RenderContextExtensions
             context.GetCell(x, y)?.SetBackground(color);
         }
 
+        public void SetCursorPosition(Position position)
+        {
+            context.CursorPosition = position;
+        }
+
         private bool CreateAreaRenderContext(Rectangle area, [NotNullWhen(true)] out RenderContext? result)
         {
             if (area.IsEmpty)
@@ -191,6 +219,7 @@ public static class RenderContextExtensions
 
             result = context with
             {
+                Parent = context,
                 Screen = screen,
                 Viewport = new Rectangle(0, 0, screen.Width, screen.Height)
             };

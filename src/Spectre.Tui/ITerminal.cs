@@ -8,4 +8,8 @@ public interface ITerminal : IDisposable
     void MoveTo(int x, int y);
     void Write(Cell cell);
     void Flush();
+
+    void HideCursor();
+    void ShowCursor();
+    void SetCursorPosition(Position position);
 }

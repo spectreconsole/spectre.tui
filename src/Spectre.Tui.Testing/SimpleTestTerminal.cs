@@ -51,6 +51,18 @@ public sealed class SimpleTestTerminal : ITestTerminal
         Clear();
     }
 
+    public void HideCursor()
+    {
+    }
+
+    public void ShowCursor()
+    {
+    }
+
+    public void SetCursorPosition(Position position)
+    {
+    }
+
     private string Render()
     {
         var output = new StringBuilder();

@@ -53,6 +53,22 @@ public abstract class AnsiTerminal : ITerminal
         }
     }
 
+    public virtual void HideCursor()
+    {
+        _writer.HideCursor();
+    }
+
+    public virtual void ShowCursor()
+    {
+        _writer.SetCursorStyle(2);
+        _writer.ShowCursor();
+    }
+
+    public virtual void SetCursorPosition(Position position)
+    {
+        _writer.CursorPosition(position.X, position.Y);
+    }
+
     public void Clear()
     {
         Mode.Clear(_writer);

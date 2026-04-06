@@ -60,7 +60,7 @@ public sealed class Renderer
         _lastRender = _stopwatch.Elapsed;
 
         // Fill out the current frame
-        var frame = new RenderContext(_buffers[_bufferIndex], _buffers[1 - _bufferIndex], _viewport, _viewport);
+        var frame = new RenderContext(null, _buffers[_bufferIndex], _buffers[1 - _bufferIndex], _viewport, _viewport);
         callback(frame, elapsedSinceLastRender);
 
         // Calculate the diff between the back and front buffer
@@ -83,11 +83,22 @@ public sealed class Renderer
             _terminal.Write(cell);
         }
 
-        // Swap the buffers
-        SwapBuffers();
+        // Set (or hide) the cursor position.
+        if (frame.CursorPosition == null)
+        {
+            _terminal.HideCursor();
+        }
+        else
+        {
+            _terminal.ShowCursor();
+            _terminal.SetCursorPosition(frame.CursorPosition.Value);
+        }
 
         // Flush the backend
         _terminal.Flush();
+
+        // Swap the buffers
+        SwapBuffers();
     }
 
     private bool ResizeIfNeeded()

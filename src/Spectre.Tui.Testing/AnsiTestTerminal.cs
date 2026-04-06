@@ -24,6 +24,11 @@ public sealed class AnsiTestTerminal : AnsiTerminal, ITestTerminal
         _size = size ?? new Size(80, 25);
     }
 
+    public override void HideCursor()
+    {
+        // Do not emit cursor logic (for now)
+    }
+
     public override Size GetSize()
     {
         return Mode.GetSize(_size.Width, _size.Height);
