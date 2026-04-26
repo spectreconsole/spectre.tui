@@ -58,6 +58,16 @@ public readonly struct Rectangle(int x, int y, int width, int height)
                value.Top < Bottom && Top < value.Bottom;
     }
 
+    public Rectangle Pad(Padding padding)
+    {
+        return new Rectangle(
+            x: X + padding.Left,
+            y: Y + padding.Top,
+            width: Math.Max(0, Width - padding.GetWidth()),
+            height: Math.Max(0, Height - padding.GetHeight())
+        );
+    }
+
     public Rectangle Inflate(Size size)
     {
         return Inflate(size.Width, size.Height);

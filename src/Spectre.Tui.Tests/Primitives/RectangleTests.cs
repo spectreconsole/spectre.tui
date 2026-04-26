@@ -80,6 +80,51 @@ public sealed class RectangleTests
         }
     }
 
+    public sealed class ThePadMethod
+    {
+        [Fact]
+        public void Should_Pad_Region_With_Expected_Size()
+        {
+            // Given
+            var region = new Rectangle(3, 5, 10, 12);
+
+            // When
+            var result = region.Pad(new Padding(1, 2, 3, 4));
+
+            // Then
+            result.ShouldBe(
+                new Rectangle(4, 7, 6, 6));
+        }
+
+        [Fact]
+        public void Should_Clamp_Width_And_Height_To_Zero_When_Padding_Exceeds_Size()
+        {
+            // Given
+            var region = new Rectangle(0, 0, 4, 4);
+
+            // When
+            var result = region.Pad(new Padding(5));
+
+            // Then
+            result.ShouldBe(
+                new Rectangle(5, 5, 0, 0));
+        }
+
+        [Fact]
+        public void Should_Pad_Uniformly_With_Single_Size_Constructor()
+        {
+            // Given
+            var region = new Rectangle(2, 2, 10, 10);
+
+            // When
+            var result = region.Pad(new Padding(2));
+
+            // Then
+            result.ShouldBe(
+                new Rectangle(4, 4, 6, 6));
+        }
+    }
+
     public sealed class TheOffsetMethod
     {
         [Fact]

@@ -22,20 +22,28 @@ public static class Program
 
         var ball = new BallState();
         var spinner = new SpinnerWidget().Kind(SpinnerKind.Dots);
-        var todo = new TodoWidget(
+        var cities = new CityTableWidget(
         [
-            new ToDoItem("नमस्ते [red]Happy Holidays[/] 🎅 Happy Holidays: [u]Happy Holidays[/]"),
-            new ToDoItem("Another list item"),
-            new ToDoItem("An [italic]initially[/] completed list item", true),
-            new ToDoItem("A list item "),
-            new ToDoItem("Another list item "),
-            new ToDoItem("Believe it or not, a list item"),
-            new ToDoItem("A list item (wow)"),
-            new ToDoItem("A list item... you know"),
-            new ToDoItem("A list item "),
-            new ToDoItem("Another list item "),
-            new ToDoItem("Believe it or not, a list item"),
-            new ToDoItem("A list item (wow)")
+            new City(1, "Tokyo", "Japan", 37400068),
+            new City(2, "Delhi", "India", 32941308),
+            new City(3, "Shanghai", "China", 28516904),
+            new City(4, "Dhaka", "Bangladesh", 23210000),
+            new City(5, "São Paulo", "Brazil", 22806704),
+            new City(6, "Cairo", "Egypt", 22183200),
+            new City(7, "Mexico City", "Mexico", 22085140),
+            new City(8, "Beijing", "China", 21766214),
+            new City(9, "Mumbai", "India", 21296517),
+            new City(10, "Osaka", "Japan", 19222665),
+            new City(11, "Chongqing", "China", 17341000),
+            new City(12, "Karachi", "Pakistan", 17236000),
+            new City(13, "Kinshasa", "DR Congo", 16315534),
+            new City(14, "Lagos", "Nigeria", 15945912),
+            new City(15, "Istanbul", "Turkey", 15848000),
+            new City(16, "Buenos Aires", "Argentina", 15369919),
+            new City(17, "Kolkata", "India", 15133888),
+            new City(18, "Manila", "Philippines", 14406059),
+            new City(19, "Guangzhou", "China", 13964637),
+            new City(20, "Tianjin", "China", 13794450),
         ]);
 
         var layout = new Layout("Root")
@@ -82,22 +90,22 @@ public static class Program
                         .Style(Color.Green)
                         .Border(Border.Rounded)
                         .TitlePadding(1)
-                        .MarkupTitle("╢ [yellow]To-Do[/] ╟")
+                        .MarkupTitle("[yellow]Largest Cities[/]")
                         .Inner(
                             new CompositeWidget(
                                 new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
-                                new PaddingWidget(new Size(-1, -1), todo),
+                                new PaddingWidget(new Padding(1, 0, 2, 0), cities),
                                 new ScrollbarWidget()
                                     .VerticalRight()
-                                    .Position(todo.Position).Length(todo.Length)
+                                    .Position(cities.Position).Length(cities.Length)
                                     .ViewportLength(1)
                                     .Style(Color.Gray)
-                                    .ThumbStyle(Color.Yellow))),
-                    middle.Inflate(new Size(-12, -5)));
+                                    .ThumbStyle(Color.Green))),
+                    middle.Inflate(new Size(-10, -4)));
 
                 // Help
                 ctx.Render(
-                    Paragraph.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move  [bold][[Space]][/]:Select")
+                    Paragraph.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move")
                         .Style(new Style(Color.Gray))
                         .Centered(), bottom);
 
@@ -114,13 +122,10 @@ public static class Program
                         running = false;
                         break;
                     case ConsoleKey.DownArrow:
-                        todo.MoveDown();
+                        cities.MoveDown();
                         break;
                     case ConsoleKey.UpArrow:
-                        todo.MoveUp();
-                        break;
-                    case ConsoleKey.Spacebar:
-                        todo.Toggle();
+                        cities.MoveUp();
                         break;
                 }
             }

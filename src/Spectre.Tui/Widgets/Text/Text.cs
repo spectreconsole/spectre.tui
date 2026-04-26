@@ -21,6 +21,10 @@ public sealed record Text : IWidget
         Lines = lines ?? throw new ArgumentNullException(nameof(lines));
     }
 
+    public static implicit operator Text(string text) => Text.FromString(text);
+
+    public static implicit operator Text(TextLine line) => new(line);
+
     public int GetWidth()
     {
         return Lines.Max(line => line.GetWidth());
