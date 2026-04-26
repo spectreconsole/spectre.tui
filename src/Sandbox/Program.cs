@@ -80,11 +80,17 @@ public static class Program
                 ctx.Render(
                     new BoxWidget()
                         .Style(Color.Green)
-                        .Border(Border.McGuganTall)
+                        .Border(Border.Rounded)
                         .Inner(
                             new CompositeWidget(
                                 new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
-                                new PaddingWidget(new Size(-1, 0), todo))),
+                                new PaddingWidget(new Size(-1, -1), todo),
+                                new ScrollbarWidget()
+                                    .VerticalRight()
+                                    .Position(todo.Position).Length(todo.Length)
+                                    .ViewportLength(1)
+                                    .Style(Color.Gray)
+                                    .ThumbStyle(Color.Yellow))),
                     middle.Inflate(new Size(-12, -5)));
 
                 // Help

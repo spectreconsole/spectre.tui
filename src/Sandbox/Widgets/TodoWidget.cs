@@ -8,6 +8,9 @@ public sealed class TodoWidget : JustInTimeWidget
 {
     private readonly ListWidget<ToDoItem> _widget;
 
+    public int Position => _widget.SelectedIndex ?? 0;
+    public int Length => _widget.Items.Count;
+
     public TodoWidget(List<ToDoItem> items)
     {
         _widget = new ListWidget<ToDoItem>(items)
