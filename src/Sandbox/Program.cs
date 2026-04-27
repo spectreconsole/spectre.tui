@@ -46,9 +46,31 @@ public static class Program
             new City(20, "Tianjin", "China", 13794450),
         ]);
 
+        var todo = new TodoWidget(
+        [
+            new ToDoItem("नमस्ते [red]Happy Holidays[/] 🎅 Happy Holidays: [u]Happy Holidays[/]"),
+            new ToDoItem("Another list item"),
+            new ToDoItem("An [italic]initially[/] completed list item", true),
+            new ToDoItem("A list item "),
+            new ToDoItem("Another list item "),
+            new ToDoItem("Believe it or not, a list item"),
+            new ToDoItem("A list item (wow)"),
+            new ToDoItem("A list item... you know"),
+            new ToDoItem("A list item "),
+            new ToDoItem("Another list item "),
+            new ToDoItem("Believe it or not, a list item"),
+            new ToDoItem("A list item (wow)")
+        ]);
+
+        var tabs = new MyTabsWidget([
+            "Largest Cities",
+            "To-Do",
+        ]);
+
         var layout = new Layout("Root")
             .SplitRows(
                 new Layout("Top").Size(1),
+                new Layout("Tabs").Size(1),
                 new Layout("Middle"),
                 new Layout("Bottom")
                     .Size(1)
@@ -73,6 +95,9 @@ public static class Program
                     new FpsWidget(info.Fps, foreground: Color.Green),
                     top);
 
+                // Tabs
+                ctx.Render(tabs, layout.GetArea(ctx, "Tabs"));
+
                 // Outer box
                 ctx.Render(new BoxWidget(Color.Red)
                 {
@@ -90,24 +115,39 @@ public static class Program
                         .Style(Color.Green)
                         .Border(Border.Rounded)
                         .TitlePadding(1)
-                        .MarkupTitle("[yellow]Largest Cities[/]")
+                        .MarkupTitle(
+                            tabs.SelectedIndex == 0
+                                ? "[yellow]Largest Cities[/]"
+                                : "[yellow]To-Do[/]")
                         .Inner(
                             new CompositeWidget(
                                 new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
-                                new PaddingWidget(new Padding(1, 0, 2, 0), cities),
+                                new PaddingWidget(new Padding(1, 0, 2, 0),
+                                    tabs.SelectedIndex == 0 ? cities : todo),
                                 new ScrollbarWidget()
                                     .VerticalRight()
-                                    .Position(cities.Position).Length(cities.Length)
+                                    .Position(tabs.SelectedIndex == 0 ? cities.Position : todo.Position)
+                                    .Length(tabs.SelectedIndex == 0 ? cities.Length : todo.Length)
                                     .ViewportLength(1)
                                     .Style(Color.Gray)
                                     .ThumbStyle(Color.Green))),
                     middle.Inflate(new Size(-10, -4)));
 
                 // Help
-                ctx.Render(
-                    Paragraph.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move")
-                        .Style(new Style(Color.Gray))
-                        .Centered(), bottom);
+                if (tabs.SelectedIndex == 0)
+                {
+                    ctx.Render(
+                        Paragraph.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move")
+                            .Style(new Style(Color.Gray))
+                            .Centered(), bottom);
+                }
+                else
+                {
+                    ctx.Render(
+                        Paragraph.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move  [bold][[SPACE]][/]:Select")
+                            .Style(new Style(Color.Gray))
+                            .Centered(), bottom);
+                }
 
                 ctx.Render(spinner, bottomRight);
             });
@@ -122,10 +162,36 @@ public static class Program
                         running = false;
                         break;
                     case ConsoleKey.DownArrow:
-                        cities.MoveDown();
+                        if (tabs.SelectedIndex == 0)
+                        {
+                            cities.MoveDown();
+                        }
+                        else
+                        {
+                            todo.MoveDown();
+                        }
+
                         break;
                     case ConsoleKey.UpArrow:
-                        cities.MoveUp();
+                        if (tabs.SelectedIndex == 0)
+                        {
+                            cities.MoveUp();
+                        }
+                        else
+                        {
+                            todo.MoveUp();
+                        }
+
+                        break;
+                    case ConsoleKey.Spacebar:
+                        if (tabs.SelectedIndex != 0)
+                        {
+                            todo.Toggle();
+                        }
+
+                        break;
+                    case ConsoleKey.Tab:
+                        tabs.MoveNext();
                         break;
                 }
             }
