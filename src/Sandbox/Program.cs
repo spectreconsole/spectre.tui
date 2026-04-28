@@ -21,7 +21,7 @@ public static class Program
         };
 
         var ball = new BallState();
-        var spinner = new SpinnerWidget().Kind(SpinnerKind.Dots);
+        var spinner = new SpinnerWidget().Kind(SpinnerKind.Default);
         var cities = new CityTableWidget(
         [
             new City(1, "Tokyo", "Japan", 37400068),
@@ -67,11 +67,21 @@ public static class Program
             "To-Do",
         ]);
 
+        var progress = new ProgressBarWidget()
+            .Value(0).Max(100)
+            .Foreground(ProgressBarBrush.Wave(new Color(177, 79, 255), new Color(0, 255, 163)))
+            .HideLabel()
+            .Smooth();
+
+        var progressDirection = 1d;
+        var progressSpeed = 20d; // units per second
+
         var layout = new Layout("Root")
             .SplitRows(
                 new Layout("Top").Size(1),
                 new Layout("Tabs").Size(1),
                 new Layout("Middle"),
+                new Layout("Progress").Size(2),
                 new Layout("Bottom")
                     .Size(1)
                     .SplitColumns(
@@ -84,6 +94,19 @@ public static class Program
             {
                 // Perform frame dependent updates
                 spinner.Update(info);
+                progress.Update(info);
+
+                progress.Value += progressDirection * progressSpeed * info.FrameTime.TotalSeconds;
+                if (progress.Value >= progress.Max)
+                {
+                    progress.Value = progress.Max;
+                    progressDirection = -1d;
+                }
+                else if (progress.Value <= 0d)
+                {
+                    progress.Value = 0d;
+                    progressDirection = 1d;
+                }
 
                 var top = layout.GetArea(ctx, "Top");
                 var middle = layout.GetArea(ctx, "Middle");
@@ -97,6 +120,7 @@ public static class Program
 
                 // Tabs
                 ctx.Render(tabs, layout.GetArea(ctx, "Tabs"));
+                ctx.Render(progress, layout.GetArea(ctx, "Progress"));
 
                 // Outer box
                 ctx.Render(new BoxWidget(Color.Red)

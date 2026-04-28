@@ -10,4 +10,9 @@ public sealed class Block
     public const char ThreeEights = '▍';
     public const char OneQuarter = '▎';
     public const char OneEight = '▏';
+
+    public sealed class Shade
+    {
+        public const char Medium = '▒';
+    }
 }
