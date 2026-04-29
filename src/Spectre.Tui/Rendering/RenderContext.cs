@@ -1,7 +1,7 @@
 namespace Spectre.Tui;
 
 [PublicAPI]
-public sealed record RenderContext
+public sealed record RenderContext : IRenderBounds
 {
     private readonly IBuffer _buffer;
 

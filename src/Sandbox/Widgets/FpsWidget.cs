@@ -2,24 +2,41 @@ namespace Sandbox;
 
 public sealed class FpsWidget : IWidget
 {
-    private readonly Paragraph _paragraph;
+    private const double SmoothingAlpha = 0.1;
 
-    public FpsWidget(
-        double fps,
-        Color? foreground = null,
-        Color? background = null)
+    private readonly Color? _foreground;
+    private readonly Color? _background;
+    private double _smoothedFps;
+
+    public FpsWidget(Color? foreground = null, Color? background = null)
     {
-        _paragraph = Paragraph.FromMarkup(
-            $"[yellow]FPS:[/] {fps:0.000}",
-            new Style
-            {
-                Foreground = foreground ?? Color.Default,
-                Background = background ?? Color.Default,
-            }).Alignment(Justify.Center);
+        _foreground = foreground;
+        _background = background;
+    }
+
+    public void Update(FrameInfo info)
+    {
+        var fps = info.Fps;
+        if (double.IsInfinity(fps) || double.IsNaN(fps))
+        {
+            return;
+        }
+
+        _smoothedFps = _smoothedFps == 0d
+            ? fps
+            : _smoothedFps + (SmoothingAlpha * (fps - _smoothedFps));
     }
 
     public void Render(RenderContext context)
     {
-        context.Render(_paragraph);
+        var paragraph = Paragraph.FromMarkup(
+            $"[yellow]FPS:[/] {_smoothedFps:0.000}",
+            new Style
+            {
+                Foreground = _foreground ?? Color.Default,
+                Background = _background ?? Color.Default,
+            }).Alignment(Justify.Center);
+
+        context.Render(paragraph);
     }
 }

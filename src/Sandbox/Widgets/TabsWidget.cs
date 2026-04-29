@@ -1,8 +1,8 @@
 namespace Sandbox;
 
-public sealed class MyTabsWidget : JustInTimeWidget
+public sealed class TabsWidget : JustInTimeWidget
 {
-    private readonly TabsWidget<MyTabsWidget.Item> _widget;
+    private readonly TabsWidget<Item> _widget;
 
     public int SelectedIndex
     {
@@ -14,20 +14,20 @@ public sealed class MyTabsWidget : JustInTimeWidget
         }
     }
 
-    public MyTabsWidget(List<string> titles)
-    {
-        _widget = new TabsWidget<Item>()
-            .WrapAround()
-            .Items(titles.Select(title => new Item(title)))
-            .SelectedIndex(0);
-    }
-
     private class Item(string markup) : ITabWidgetItem
     {
         public TextLine CreateTextLine(bool isSelected)
         {
             return  TextLine.FromMarkup(markup);
         }
+    }
+
+    public TabsWidget(List<string> titles)
+    {
+        _widget = new TabsWidget<Item>()
+            .WrapAround()
+            .Items(titles.Select(title => new Item(title)))
+            .SelectedIndex(0);
     }
 
     public void MoveNext()

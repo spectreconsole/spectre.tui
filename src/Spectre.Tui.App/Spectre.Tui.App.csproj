@@ -1,18 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>true</IsPackable>
     <IsAotCompatible>true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
-    <DefineConstants>$(DefineConstants)TRACE;WCWIDTH_VISIBILITY_INTERNAL</DefineConstants>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <RootNamespace>Spectre.Tui</RootNamespace>
+    <RootNamespace>Spectre.Tui.App</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spectre.Console.Ansi" />
-    <PackageReference Include="Wcwidth.Sources" PrivateAssets="All" />
+    <ProjectReference Include="..\Spectre.Tui\Spectre.Tui.csproj" />
   </ItemGroup>
 
   <ItemGroup>

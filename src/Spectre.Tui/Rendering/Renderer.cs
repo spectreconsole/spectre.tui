@@ -41,6 +41,29 @@ public sealed class Renderer
         _targetFps.Target = null;
     }
 
+    /// <summary>
+    /// Returns the wall-clock time remaining until the next call to <see cref="Draw"/>
+    /// would actually produce a render. Returns <see cref="TimeSpan.Zero"/> when a
+    /// render is already due (or when no FPS target is set). Useful for callers that
+    /// want to pace their loop precisely without busy-waiting.
+    /// </summary>
+    public TimeSpan TimeUntilNextRender()
+    {
+        if (_targetFps.Target == null)
+        {
+            return TimeSpan.Zero;
+        }
+
+        var elapsed = _stopwatch.Elapsed - _lastUpdate;
+        var pendingAccumulated = _targetFps.Accumulated + elapsed;
+        if (pendingAccumulated >= _targetFps.Target.Value)
+        {
+            return TimeSpan.Zero;
+        }
+
+        return _targetFps.Target.Value - pendingAccumulated;
+    }
+
     public void Draw(Action<RenderContext, FrameInfo> callback)
     {
         // Calculate the time since last update
