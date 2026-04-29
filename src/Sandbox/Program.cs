@@ -20,6 +20,7 @@ public static class Program
             running = false;
         };
 
+        var showPopup = false;
         var ball = new BallState();
         var spinner = new SpinnerWidget().Kind(SpinnerKind.Default);
         var cities = new CityTableWidget(
@@ -174,6 +175,30 @@ public static class Program
                 }
 
                 ctx.Render(spinner, bottomRight);
+
+                if (showPopup)
+                {
+                    ctx.Render(
+                        new PopupWidget(new Size(50, 10))
+                            .Content(
+                                new BoxWidget()
+                                    .Title("Popup", TitlePosition.Top, Justify.Center)
+                                    .Style(Color.Yellow)
+                                    .Inner(
+                                        Paragraph.FromMarkup(
+                                            """
+                                            This is a little popup that shows some word wrapped text, with some markup
+                                            [blue]colors[/] and [italic]styles.[/]
+
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Curabitur porttitor scelerisque lorem, vel mattis neque vulputate pellentesque.
+                                            Nunc hendrerit est quis auctor vulputate. Sed molestie nisl eros, rutrum ornare
+                                            enim feugiat at. Aliquam mollis sit amet nisi eu vestibulum.
+                                            Nam pharetra hendrerit nisl sit amet luctus. Donec rhoncus efficitur
+                                            neque sed vulputate. Phasellus fringilla feugiat orci, vel tempus dolor
+                                            ullamcorper id. Pellentesque accumsan ligula a nibh efficitur ullamcorper.
+                                            """).Centered())));
+                }
             });
 
             // Handle input
@@ -184,6 +209,9 @@ public static class Program
                 {
                     case ConsoleKey.Q:
                         running = false;
+                        break;
+                    case ConsoleKey.B:
+                        showPopup = !showPopup;
                         break;
                     case ConsoleKey.DownArrow:
                         if (tabs.SelectedIndex == 0)

@@ -119,6 +119,20 @@ public readonly struct Rectangle(int x, int y, int width, int height)
             Math.Max(Bottom, other.Bottom) - y);
     }
 
+    public Rectangle Center(Size size)
+    {
+        return Center(size.Width, size.Height);
+    }
+
+    public Rectangle Center(int width, int height)
+    {
+        return new Rectangle(
+            Math.Max(0, (Width - width) / 2),
+            Math.Max(0, (Height - height) / 2),
+            Math.Min(width, Width),
+            Math.Min(height, Height));
+    }
+
     public void Deconstruct(out int x, out int y, out int width, out int height)
     {
         x = X;
