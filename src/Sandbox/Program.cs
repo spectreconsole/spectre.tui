@@ -64,9 +64,41 @@ public static class Program
         ]);
 
         var tabs = new MyTabsWidget([
-            "Largest Cities",
-            "To-Do",
+            "Table",
+            "List",
+            "Scroll",
         ]);
+
+        var scroll = new ScrollViewWidget()
+            .Inner(
+                Paragraph.FromMarkup(
+                    """
+                    [yellow]Scrollable paragraph demo[/]
+
+                    Use [bold]↑↓[/] to scroll one row, [bold]←→[/] to scroll one column.
+                    [bold]PgUp/PgDn[/] move by a page; [bold]Home/End[/] jump to the extremes.
+
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur porttitor scelerisque lorem, vel mattis neque vulputate pellentesque. Nunc hendrerit est quis auctor vulputate. Sed molestie nisl eros, rutrum ornare enim feugiat at.
+                    Aliquam mollis sit amet nisi eu vestibulum. Nam pharetra hendrerit nisl sit amet luctus.
+                    Donec rhoncus efficitur neque sed vulputate. Phasellus fringilla feugiat orci, vel tempus dolor ullamcorper id.
+                    Pellentesque accumsan ligula a nibh efficitur ullamcorper.
+
+                    Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean condimentum mauris sit amet libero ornare.
+                    Mauris vehicula urna a libero suscipit, vel sodales quam mattis. Sed gravida fermentum justo, et aliquam diam venenatis sed.
+                    Cras euismod, lectus eu vehicula bibendum, augue ipsum vehicula sapien.
+
+                    Quisque eget porta est. Curabitur ut hendrerit lacus. Pellentesque commodo, est at gravida porta, magna ipsum vehicula urna, vel ornare velit ipsum sed augue.
+                    Etiam ut accumsan elit. Suspendisse potenti. Aenean nec lectus a velit fringilla aliquet.
+
+                    Praesent id mi at velit suscipit fermentum. Cras gravida ipsum a velit imperdiet, vel ornare ipsum porta. Sed ut ante in dolor cursus malesuada.
+                    Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+
+                    [bold green]End of demo[/]
+                    """)
+                    .Folded())
+            .HorizontalScroll(ScrollMode.Disabled)
+            .ScrollbarStyle(Color.Gray)
+            .ScrollbarThumbStyle(Color.Green);
 
         var progress = new ProgressBarWidget()
             .Value(0).Max(100)
@@ -135,44 +167,49 @@ public static class Program
                 ctx.Render(new BallWidget(), ball);
 
                 // Inner box
+                var titleMarkup = tabs.SelectedIndex switch
+                {
+                    0 => "[yellow]Largest Cities[/]",
+                    1 => "[yellow]To-Do[/]",
+                    _ => "[yellow]Scroll[/]",
+                };
+
+                IWidget innerBoxContent = tabs.SelectedIndex == 2
+                    ? new CompositeWidget(
+                        new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
+                        scroll)
+                    : new CompositeWidget(
+                        new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
+                        new PaddingWidget(new Padding(1, 0, 2, 0),
+                            tabs.SelectedIndex == 0 ? cities : todo),
+                        new ScrollbarWidget()
+                            .VerticalRight()
+                            .Position(tabs.SelectedIndex == 0 ? cities.Position : todo.Position)
+                            .Length(tabs.SelectedIndex == 0 ? cities.Length : todo.Length)
+                            .ViewportLength(1)
+                            .Style(Color.Gray)
+                            .ThumbStyle(Color.Green));
+
                 ctx.Render(
                     new BoxWidget()
                         .Style(Color.Green)
                         .Border(Border.Rounded)
                         .TitlePadding(1)
-                        .MarkupTitle(
-                            tabs.SelectedIndex == 0
-                                ? "[yellow]Largest Cities[/]"
-                                : "[yellow]To-Do[/]")
-                        .Inner(
-                            new CompositeWidget(
-                                new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
-                                new PaddingWidget(new Padding(1, 0, 2, 0),
-                                    tabs.SelectedIndex == 0 ? cities : todo),
-                                new ScrollbarWidget()
-                                    .VerticalRight()
-                                    .Position(tabs.SelectedIndex == 0 ? cities.Position : todo.Position)
-                                    .Length(tabs.SelectedIndex == 0 ? cities.Length : todo.Length)
-                                    .ViewportLength(1)
-                                    .Style(Color.Gray)
-                                    .ThumbStyle(Color.Green))),
+                        .MarkupTitle(titleMarkup)
+                        .Inner(innerBoxContent),
                     middle.Inflate(new Size(-10, -4)));
 
                 // Help
-                if (tabs.SelectedIndex == 0)
+                var helpMarkup = tabs.SelectedIndex switch
                 {
-                    ctx.Render(
-                        Paragraph.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move")
-                            .Style(new Style(Color.Gray))
-                            .Centered(), bottom);
-                }
-                else
-                {
-                    ctx.Render(
-                        Paragraph.FromMarkup("[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move  [bold][[SPACE]][/]:Select")
-                            .Style(new Style(Color.Gray))
-                            .Centered(), bottom);
-                }
+                    0 => "[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move",
+                    1 => "[bold][[Q]][/]:Quit  [bold][[↑↓]][/]:Move  [bold][[SPACE]][/]:Select",
+                    _ => "[bold][[Q]][/]:Quit  [bold][[↑↓←→ PgUp PgDn Home End]][/]:Scroll",
+                };
+                ctx.Render(
+                    Paragraph.FromMarkup(helpMarkup)
+                        .Style(new Style(Color.Gray))
+                        .Centered(), bottom);
 
                 ctx.Render(spinner, bottomRight);
 
@@ -214,29 +251,67 @@ public static class Program
                         showPopup = !showPopup;
                         break;
                     case ConsoleKey.DownArrow:
-                        if (tabs.SelectedIndex == 0)
+                        switch (tabs.SelectedIndex)
                         {
-                            cities.MoveDown();
-                        }
-                        else
-                        {
-                            todo.MoveDown();
+                            case 0: cities.MoveDown(); break;
+                            case 1: todo.MoveDown(); break;
+                            case 2: scroll.ScrollDown(); break;
                         }
 
                         break;
                     case ConsoleKey.UpArrow:
-                        if (tabs.SelectedIndex == 0)
+                        switch (tabs.SelectedIndex)
                         {
-                            cities.MoveUp();
+                            case 0: cities.MoveUp(); break;
+                            case 1: todo.MoveUp(); break;
+                            case 2: scroll.ScrollUp(); break;
                         }
-                        else
+
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        if (tabs.SelectedIndex == 2)
                         {
-                            todo.MoveUp();
+                            scroll.ScrollLeft();
+                        }
+
+                        break;
+                    case ConsoleKey.RightArrow:
+                        if (tabs.SelectedIndex == 2)
+                        {
+                            scroll.ScrollRight();
+                        }
+
+                        break;
+                    case ConsoleKey.PageUp:
+                        if (tabs.SelectedIndex == 2)
+                        {
+                            scroll.PageUp();
+                        }
+
+                        break;
+                    case ConsoleKey.PageDown:
+                        if (tabs.SelectedIndex == 2)
+                        {
+                            scroll.PageDown();
+                        }
+
+                        break;
+                    case ConsoleKey.Home:
+                        if (tabs.SelectedIndex == 2)
+                        {
+                            scroll.ScrollToTop();
+                        }
+
+                        break;
+                    case ConsoleKey.End:
+                        if (tabs.SelectedIndex == 2)
+                        {
+                            scroll.ScrollToBottom();
                         }
 
                         break;
                     case ConsoleKey.Spacebar:
-                        if (tabs.SelectedIndex != 0)
+                        if (tabs.SelectedIndex == 1)
                         {
                             todo.Toggle();
                         }
