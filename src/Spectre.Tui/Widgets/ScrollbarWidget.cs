@@ -15,7 +15,7 @@ public sealed class ScrollbarWidget : IWidget
     public char TrackSymbol { get; set; } = Scrollbar.DoubleVertical.Track;
     public char ThumbSymbol { get; set; } = Scrollbar.DoubleVertical.Thumb;
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         var area = context.Viewport;
 

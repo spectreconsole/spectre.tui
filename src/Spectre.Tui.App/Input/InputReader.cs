@@ -4,7 +4,7 @@ namespace Spectre.Tui.App;
 public interface IInputReader : IDisposable
 {
     void Initialize(ApplicationContext application);
-    ValueTask<ApplicationEvent?> Read(CancellationToken cancellationToken);
+    ValueTask<ApplicationMessage?> Read(CancellationToken cancellationToken);
 }
 
 internal sealed class InputReader : IInputReader
@@ -27,10 +27,10 @@ internal sealed class InputReader : IInputReader
         System.Console.CancelKeyPress -= _cancelHandler;
     }
 
-    public ValueTask<ApplicationEvent?> Read(CancellationToken cancellationToken)
+    public ValueTask<ApplicationMessage?> Read(CancellationToken cancellationToken)
     {
         return !System.Console.KeyAvailable
-            ? new ValueTask<ApplicationEvent?>((ApplicationEvent?)null)
-            : new ValueTask<ApplicationEvent?>(new KeyEvent(System.Console.ReadKey(true)));
+            ? new ValueTask<ApplicationMessage?>((ApplicationMessage?)null)
+            : new ValueTask<ApplicationMessage?>(new KeyMessage(System.Console.ReadKey(true)));
     }
 }

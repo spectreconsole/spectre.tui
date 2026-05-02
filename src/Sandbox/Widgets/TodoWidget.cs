@@ -1,6 +1,6 @@
 namespace Sandbox;
 
-public sealed class ToDoItem(string todo, bool completed = false) : ListWidgetItem
+public sealed class ToDoItem(string todo, bool completed = false) : IListWidgetItem
 {
     public string Todo { get; init; } = todo;
     public bool Completed { get; set; } = completed;
@@ -10,7 +10,7 @@ public sealed class ToDoItem(string todo, bool completed = false) : ListWidgetIt
         Completed = !Completed;
     }
 
-    protected override Text CreateText(bool isSelected)
+    Text IListWidgetItem.CreateText(bool isSelected)
     {
         var symbol = Completed ? "✓" : " ";
         var decoration = isSelected

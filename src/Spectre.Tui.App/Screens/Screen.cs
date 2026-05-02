@@ -5,21 +5,21 @@ public abstract class Screen
 {
     public virtual bool IsTransparent => false;
 
-    public virtual void OnEvent(ApplicationContext context, ApplicationEvent evt)
+    public virtual void OnMessage(ApplicationContext context, ApplicationMessage message)
     {
     }
-
-    public virtual void Update(FrameInfo frame, IRenderBounds bounds)
-    {
-    }
-
-    public abstract void Render(RenderContext context, FrameInfo frame);
 
     public virtual void OnEnter(ApplicationContext context)
     {
     }
 
-    public virtual void OnLeave(ApplicationContext ctx)
+    public virtual void OnLeave(ApplicationContext context)
+    {
+    }
+
+    public abstract void Render(RenderContext context, FrameInfo frame);
+
+    public virtual void Update(FrameInfo frame, IRenderBounds bounds)
     {
     }
 }

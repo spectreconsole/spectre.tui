@@ -50,7 +50,7 @@ public sealed class TableWidget<TRow> : IWidget
         SetSelectedIndex(Rows.Count - 1);
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         if (Columns.Count == 0)
         {

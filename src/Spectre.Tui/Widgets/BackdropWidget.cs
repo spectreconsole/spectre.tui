@@ -7,7 +7,7 @@ public sealed class BackdropWidget : IWidget
     public Color? Foreground { get; set; }
     public Rectangle? Exclusion { get; set; }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         var area = context.Viewport;
         var fg = GetForeground();

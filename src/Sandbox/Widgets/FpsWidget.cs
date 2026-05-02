@@ -27,7 +27,7 @@ public sealed class FpsWidget : IWidget
             : _smoothedFps + (SmoothingAlpha * (fps - _smoothedFps));
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         var paragraph = Paragraph.FromMarkup(
             $"[yellow]FPS:[/] {_smoothedFps:0.000}",

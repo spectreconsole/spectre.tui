@@ -5,7 +5,7 @@ public sealed class ClearWidget(
     char? symbol = null,
     Style? style = null) : IWidget
 {
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         for (var x = 0; x < context.Viewport.Width; x++)
         {

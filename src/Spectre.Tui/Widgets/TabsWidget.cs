@@ -64,7 +64,7 @@ public class TabsWidget<T> : IWidget
         SetSelectedIndex(Items.Count - 1);
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         if (Items.Count == 0)
         {

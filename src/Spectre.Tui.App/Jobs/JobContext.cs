@@ -13,13 +13,13 @@ internal sealed class JobContext : IJobContext
     }
 
     public void Send<T>(T data)
-        where T : ApplicationEvent
+        where T : ApplicationMessage
     {
         _app.Send(data);
     }
 
     public void Broadcast<T>(T data)
-        where T : ApplicationEvent
+        where T : ApplicationMessage
     {
         _app.Broadcast(data);
     }

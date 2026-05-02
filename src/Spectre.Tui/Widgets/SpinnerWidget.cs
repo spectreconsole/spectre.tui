@@ -18,7 +18,7 @@ public sealed class SpinnerWidget : IWidget
         }
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         context.SetString(0, 0, Kind.Frames[_frame]);
     }

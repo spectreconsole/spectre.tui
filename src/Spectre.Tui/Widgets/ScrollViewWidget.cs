@@ -71,7 +71,7 @@ public sealed class ScrollViewWidget : IWidget
         HorizontalOffset = int.MaxValue;
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         var viewport = context.Viewport;
         var inner = Inner;

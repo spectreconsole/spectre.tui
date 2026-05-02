@@ -88,7 +88,7 @@ public sealed record Paragraph : IWidget
         }
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         var maxWidth = context.Viewport.Width;
         var height = context.Viewport.Height;

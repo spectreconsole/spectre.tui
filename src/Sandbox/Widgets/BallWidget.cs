@@ -2,7 +2,7 @@ namespace Sandbox;
 
 public sealed class BallWidget : IStatefulWidget<BallState>
 {
-    public void Render(RenderContext context, BallState state)
+    void IStatefulWidget<BallState>.Render(RenderContext context, BallState state)
     {
         var x = (int)state.Position.X;
         var y = (int)state.Position.Y;

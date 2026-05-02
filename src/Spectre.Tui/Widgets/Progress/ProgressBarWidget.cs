@@ -22,7 +22,7 @@ public sealed class ProgressBarWidget : IWidget
         _elapsed += frame.FrameTime;
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         var area = context.Viewport;
         if (area.Width <= 0 || area.Height <= 0)

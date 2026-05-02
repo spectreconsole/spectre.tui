@@ -100,9 +100,9 @@ public sealed class Layout : IRatioResolvable
         Name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
-    public Rectangle GetArea(RenderContext ctx, string name)
+    public Rectangle GetArea(IRenderBounds context, string name)
     {
-        return GetArea(ctx.Viewport, name);
+        return GetArea(context.Viewport, name);
     }
 
     public Rectangle GetArea(Rectangle area, string name)

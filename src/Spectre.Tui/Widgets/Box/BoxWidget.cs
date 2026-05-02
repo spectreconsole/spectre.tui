@@ -9,7 +9,7 @@ public sealed class BoxWidget(Style? style = null) : IWidget
     public List<BoxTitle> Titles { get; } = [];
     public int TitlePadding { get; set; }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         var area = context.Viewport;
 

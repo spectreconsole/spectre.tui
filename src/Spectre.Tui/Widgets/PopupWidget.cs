@@ -14,7 +14,7 @@ public sealed class PopupWidget : IWidget
         Backdrop = new BackdropWidget();
     }
 
-    public void Render(RenderContext ctx)
+    void IWidget.Render(RenderContext ctx)
     {
         var area = ctx.Screen.Center(Size);
 

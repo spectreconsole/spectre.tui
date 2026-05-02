@@ -2,9 +2,9 @@ namespace Spectre.Tui.Tests;
 
 public sealed class ListWidgetTests
 {
-    private sealed class TestItem(string text) : ListWidgetItem
+    private sealed class TestItem(string text) : IListWidgetItem
     {
-        protected override Text CreateText(bool isSelected)
+        Text IListWidgetItem.CreateText(bool isSelected)
         {
             return Text.FromString(text);
         }

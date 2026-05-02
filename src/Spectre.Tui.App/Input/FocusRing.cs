@@ -25,14 +25,14 @@ public sealed class FocusRing
         }
     }
 
-    public bool HandleInput(ApplicationEvent evt)
+    public bool HandleInput(ApplicationMessage evt)
     {
-        if (evt is not KeyEvent k || k.Key.Key != ConsoleKey.Tab)
+        if (evt is not KeyMessage k || k.Info.Key != ConsoleKey.Tab)
         {
             return false;
         }
 
-        var direction = (k.Key.Modifiers & ConsoleModifiers.Shift) != 0 ? -1 : 1;
+        var direction = (k.Info.Modifiers & ConsoleModifiers.Shift) != 0 ? -1 : 1;
         Move(direction);
         return true;
     }

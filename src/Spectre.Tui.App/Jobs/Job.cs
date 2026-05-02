@@ -2,40 +2,40 @@ namespace Spectre.Tui.App;
 
 internal sealed class Job : IJobHandle
 {
-    private readonly CancellationTokenSource _cts;
+    private readonly CancellationTokenSource _cancellationTokenSource;
 
     public Task Completion { get; }
 
     public Job(Application app, Func<IJobContext, Task> work, CancellationToken cancellationToken)
     {
-        _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        var ctx = new JobContext(app, _cts.Token);
+        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        var context = new JobContext(app, _cancellationTokenSource.Token);
 
         Completion = Task.Run(
             async () =>
             {
                 try
                 {
-                    await work(ctx).ConfigureAwait(false);
+                    await work(context).ConfigureAwait(false);
                 }
-                catch (OperationCanceledException) when (_cts.IsCancellationRequested)
+                catch (OperationCanceledException) when (_cancellationTokenSource.IsCancellationRequested)
                 {
                     // Cooperative cancellation — not an error.
                 }
                 catch (Exception ex)
                 {
-                    app.Broadcast(new JobFailed(this, ex));
+                    app.Broadcast(new JobFailedMessage(this, ex));
                 }
                 finally
                 {
-                    _cts.Dispose();
+                    _cancellationTokenSource.Dispose();
                 }
             },
-            _cts.Token);
+            _cancellationTokenSource.Token);
     }
 
     public void Cancel()
     {
-        _cts.Cancel();
+        _cancellationTokenSource.Cancel();
     }
 }

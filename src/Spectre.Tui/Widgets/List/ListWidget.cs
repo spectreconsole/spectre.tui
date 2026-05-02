@@ -54,7 +54,7 @@ public sealed class ListWidget<TItem> : IWidget
         Items = items ?? throw new ArgumentNullException(nameof(items));
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         if (Items.Count == 0)
         {
@@ -216,21 +216,6 @@ public sealed class ListWidget<TItem> : IWidget
 
         return (firstVisibleIndex, lastVisibleIndex);
     }
-}
-
-public interface IListWidgetItem
-{
-    Text CreateText(bool isSelected);
-}
-
-public abstract class ListWidgetItem : IListWidgetItem
-{
-    Text IListWidgetItem.CreateText(bool isSelected)
-    {
-        return CreateText(isSelected);
-    }
-
-    protected abstract Text CreateText(bool isSelected);
 }
 
 public static class ListWidgetExtensions

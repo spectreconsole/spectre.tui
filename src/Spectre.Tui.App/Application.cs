@@ -9,16 +9,16 @@ public sealed class Application
     private readonly ApplicationContext _context;
     private readonly Channel<QueuedEvent> _events;
     private readonly ScreenStack _stack;
-    private readonly CancellationTokenSource _shutdownCts;
+    private readonly CancellationTokenSource _shutdownSource;
     private bool _running;
 
     private abstract record QueuedEvent
     {
         internal sealed record Quit : QueuedEvent;
 
-        internal sealed record Send(ApplicationEvent Event) : QueuedEvent;
+        internal sealed record Send(ApplicationMessage Message) : QueuedEvent;
 
-        internal sealed record Broadcast(ApplicationEvent Event) : QueuedEvent;
+        internal sealed record Broadcast(ApplicationMessage Message) : QueuedEvent;
     }
 
     private Application(ApplicationSettings? settings = null)
@@ -26,7 +26,7 @@ public sealed class Application
         _settings = settings ?? new ApplicationSettings();
         _stack = new ScreenStack();
         _context = new ApplicationContext(this, _stack);
-        _shutdownCts = new CancellationTokenSource();
+        _shutdownSource = new CancellationTokenSource();
         _events = Channel.CreateUnbounded<QueuedEvent>(new UnboundedChannelOptions
         {
             SingleReader = true,
@@ -51,7 +51,7 @@ public sealed class Application
         _running = true;
 
         var reader = _settings.InputReader ?? new InputReader();
-        var input = InputPump.Run(_context, reader, _shutdownCts.Token);
+        var input = InputPump.Run(_context, reader, _shutdownSource.Token);
 
         try
         {
@@ -85,14 +85,14 @@ public sealed class Application
                 }
             }
         }
-        catch (OperationCanceledException) when (_shutdownCts.Token.IsCancellationRequested)
+        catch (OperationCanceledException) when (_shutdownSource.Token.IsCancellationRequested)
         {
             // Expected on shutdown
         }
         finally
         {
             // Shut down
-            await _shutdownCts.CancelAsync();
+            await _shutdownSource.CancelAsync();
 
             // Wait for the input thread to cancel
             await input;
@@ -108,13 +108,13 @@ public sealed class Application
     }
 
     internal void Send<T>(T data)
-        where T : ApplicationEvent
+        where T : ApplicationMessage
     {
         _events.Writer.TryWrite(new QueuedEvent.Send(data));
     }
 
     internal void Broadcast<T>(T data)
-        where T : ApplicationEvent
+        where T : ApplicationMessage
     {
         _events.Writer.TryWrite(new QueuedEvent.Broadcast(data));
     }
@@ -122,7 +122,7 @@ public sealed class Application
     internal IJobHandle StartJob(Func<IJobContext, Task> work)
     {
         ArgumentNullException.ThrowIfNull(work);
-        return new Job(this, work, _shutdownCts.Token);
+        return new Job(this, work, _shutdownSource.Token);
     }
 
     private void Dispatch(QueuedEvent queued)
@@ -133,12 +133,12 @@ public sealed class Application
                 _running = false;
                 break;
             case QueuedEvent.Send e when _stack.Count > 0:
-                _stack.Peek().OnEvent(_context, e.Event);
+                _stack.Peek().OnMessage(_context, e.Message);
                 break;
             case QueuedEvent.Broadcast e:
                 foreach (var screen in _stack)
                 {
-                    screen.OnEvent(_context, e.Event);
+                    screen.OnMessage(_context, e.Message);
                 }
 
                 break;

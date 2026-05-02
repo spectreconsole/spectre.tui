@@ -34,23 +34,23 @@ public sealed class CitiesTab : SandboxTab
     public override string TabLabel => "Table";
     public override string HelpMarkup => "[bold][[↑↓]][/]:Move";
 
-    public override void OnEvent(ApplicationEvent evt, ApplicationContext ctx)
+    public override void OnEvent(ApplicationContext context, ApplicationMessage e)
     {
-        if (evt is not KeyEvent k)
+        if (e is not KeyMessage k)
         {
             return;
         }
 
-        switch (k.Key.Key)
+        switch (k.Info.Key)
         {
             case ConsoleKey.UpArrow: _cities.MoveUp(); break;
             case ConsoleKey.DownArrow: _cities.MoveDown(); break;
         }
     }
 
-    public override void Render(RenderContext ctx, Rectangle area, FrameInfo frame)
+    public override void Render(RenderContext context)
     {
-        ctx.Render(
+        context.Render(
             new BoxWidget()
                 .Style(Color.Green)
                 .Border(Border.Rounded)
@@ -65,7 +65,6 @@ public sealed class CitiesTab : SandboxTab
                         .Length(_cities.Length)
                         .ViewportLength(1)
                         .Style(Color.Gray)
-                        .ThumbStyle(Color.Green))),
-            area);
+                        .ThumbStyle(Color.Green))));
     }
 }

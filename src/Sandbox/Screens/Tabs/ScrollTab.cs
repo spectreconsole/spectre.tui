@@ -41,14 +41,14 @@ public sealed class ScrollTab : SandboxTab
     public override string TabLabel => "Scroll";
     public override string HelpMarkup => "[bold][[↑↓←→ PgUp PgDn Home End]][/]:Scroll";
 
-    public override void OnEvent(ApplicationEvent evt, ApplicationContext ctx)
+    public override void OnEvent(ApplicationContext context, ApplicationMessage evt)
     {
-        if (evt is not KeyEvent k)
+        if (evt is not KeyMessage k)
         {
             return;
         }
 
-        switch (k.Key.Key)
+        switch (k.Info.Key)
         {
             case ConsoleKey.UpArrow: _scroll.ScrollUp(); break;
             case ConsoleKey.DownArrow: _scroll.ScrollDown(); break;
@@ -61,9 +61,9 @@ public sealed class ScrollTab : SandboxTab
         }
     }
 
-    public override void Render(RenderContext ctx, Rectangle area, FrameInfo frame)
+    public override void Render(RenderContext context)
     {
-        ctx.Render(
+        context.Render(
             new BoxWidget()
                 .Style(Color.Green)
                 .Border(Border.Rounded)
@@ -71,7 +71,6 @@ public sealed class ScrollTab : SandboxTab
                 .MarkupTitle("[yellow]Scroll[/]")
                 .Inner(new CompositeWidget(
                     new ClearWidget(' ', new Style(decoration: Decoration.Bold)),
-                    _scroll)),
-            area);
+                    _scroll)));
     }
 }

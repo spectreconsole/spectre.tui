@@ -1,6 +1,6 @@
 namespace Sandbox;
 
-public abstract class SandboxTab
+public abstract class SandboxTab : IWidget
 {
     public abstract string TabLabel { get; }
     public abstract string HelpMarkup { get; }
@@ -9,9 +9,9 @@ public abstract class SandboxTab
     {
     }
 
-    public virtual void OnEvent(ApplicationEvent evt, ApplicationContext ctx)
+    public virtual void OnEvent(ApplicationContext context, ApplicationMessage e)
     {
     }
 
-    public abstract void Render(RenderContext ctx, Rectangle area, FrameInfo frame);
+    public abstract void Render(RenderContext context);
 }

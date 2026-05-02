@@ -57,25 +57,25 @@ public sealed class SandboxScreen : Screen
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), job.CancellationToken);
                 count++;
-                job.Broadcast(new TickEvent(count));
+                job.Broadcast(new TickMessage(count));
             }
         });
     }
 
-    public override void OnEvent(ApplicationContext context, ApplicationEvent evt)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage message)
     {
-        if (evt is TickEvent tick)
+        if (message is TickMessage tick)
         {
             _tickCount = tick.Count;
             return;
         }
 
-        if (evt is not KeyEvent k)
+        if (message is not KeyMessage k)
         {
             return;
         }
 
-        switch (k.Key.Key)
+        switch (k.Info.Key)
         {
             case ConsoleKey.Q:
                 context.Quit();
@@ -89,7 +89,7 @@ public sealed class SandboxScreen : Screen
         }
 
         _tabComponents[_tabs.SelectedIndex]
-            .OnEvent(evt, context);
+            .OnEvent(context, message);
     }
 
     public override void Update(FrameInfo frame, IRenderBounds bounds)
@@ -99,6 +99,8 @@ public sealed class SandboxScreen : Screen
         _spinner.Update(frame);
         _progress.Update(frame);
         _fps.Update(frame);
+
+        _ball.Update(frame.FrameTime, _layout.GetArea(bounds, "Middle").Inflate(-1, -1));
 
         _progress.Value += _progressDirection * ProgressSpeed * frame.FrameTime.TotalSeconds;
         if (_progress.Value >= _progress.Max)
@@ -131,11 +133,10 @@ public sealed class SandboxScreen : Screen
         context.Render(new ClearWidget('╱', Color.Gray), middle.Inflate(-1, -1));
 
         // Ball
-        _ball.Update(frame.FrameTime, middle.Inflate(-1, -1));
         context.Render(new BallWidget(), _ball);
 
         // Active tab content
-        ActiveTab.Render(context, middle.Inflate(new Size(-10, -4)), frame);
+        context.Render(ActiveTab, middle.Inflate(new Size(-10, -4)));
 
         // Progress
         context.Render(_progress, _layout.GetArea(context, "Progress"));

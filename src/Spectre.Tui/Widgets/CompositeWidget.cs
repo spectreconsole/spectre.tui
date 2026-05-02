@@ -9,7 +9,7 @@ public class CompositeWidget : IWidget
         _widgets = widgets ?? throw new ArgumentNullException(nameof(widgets));
     }
 
-    public void Render(RenderContext context)
+    void IWidget.Render(RenderContext context)
     {
         foreach (var widget in _widgets)
         {

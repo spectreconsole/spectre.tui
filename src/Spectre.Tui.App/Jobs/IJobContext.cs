@@ -4,6 +4,6 @@ namespace Spectre.Tui.App;
 public interface IJobContext
 {
     CancellationToken CancellationToken { get; }
-    void Send<T>(T data) where T : ApplicationEvent;
-    void Broadcast<T>(T data) where T : ApplicationEvent;
+    void Send<T>(T data) where T : ApplicationMessage;
+    void Broadcast<T>(T data) where T : ApplicationMessage;
 }

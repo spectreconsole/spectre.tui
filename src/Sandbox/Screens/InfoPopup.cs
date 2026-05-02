@@ -7,20 +7,20 @@ public sealed class InfoPopup : Popup
     private readonly ScrollViewWidget _scroller =
         new ScrollViewWidget().HorizontalScroll(ScrollMode.Disabled);
 
-    public override void OnEvent(ApplicationContext context, ApplicationEvent evt)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage message)
     {
-        switch (evt)
+        switch (message)
         {
-            case TickEvent tick:
+            case TickMessage tick:
                 _lastTick = tick.Count;
                 break;
-            case KeyEvent { Key.Key: ConsoleKey.B or ConsoleKey.Escape }:
+            case KeyMessage { Info.Key: ConsoleKey.B or ConsoleKey.Escape }:
                 context.Pop();
                 break;
-            case KeyEvent { Key.Key: ConsoleKey.UpArrow }:
+            case KeyMessage { Info.Key: ConsoleKey.UpArrow }:
                 _scroller.ScrollUp();
                 break;
-            case KeyEvent { Key.Key: ConsoleKey.DownArrow }:
+            case KeyMessage { Info.Key: ConsoleKey.DownArrow }:
                 _scroller.ScrollDown();
                 break;
         }
@@ -28,7 +28,6 @@ public sealed class InfoPopup : Popup
 
     public override void Render(RenderContext context, FrameInfo frame)
     {
-        // Update the scroller content
         _scroller
             .Inner(
                 Paragraph.FromMarkup(
