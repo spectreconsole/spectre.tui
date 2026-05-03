@@ -41,7 +41,7 @@ public sealed class ScrollTab : SandboxTab
     public override string TabLabel => "Scroll";
     public override string HelpMarkup => "[bold][[↑↓←→ PgUp PgDn Home End]][/]:Scroll";
 
-    public override void OnEvent(ApplicationContext context, ApplicationMessage evt)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage evt)
     {
         if (evt is not KeyMessage k)
         {

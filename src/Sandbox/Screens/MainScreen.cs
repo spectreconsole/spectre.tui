@@ -25,6 +25,7 @@ public sealed class SandboxScreen : Screen
             new CitiesTab(),
             new TodoTab(),
             new ScrollTab(),
+            new TextBoxTab(),
         ];
 
         _tabs = new TabsWidget(_tabComponents.Select(t => t.TabLabel).ToList());
@@ -81,7 +82,7 @@ public sealed class SandboxScreen : Screen
                 context.Quit();
                 return;
             case ConsoleKey.B:
-                context.Push(new InfoPopup());
+                context.Push(new Popup(new Size(50, 12), "Popup", new InfoPopup()));
                 return;
             case ConsoleKey.Tab:
                 _tabs.MoveNext();
@@ -89,7 +90,7 @@ public sealed class SandboxScreen : Screen
         }
 
         _tabComponents[_tabs.SelectedIndex]
-            .OnEvent(context, message);
+            .OnMessage(context, message);
     }
 
     public override void Update(FrameInfo frame, IRenderBounds bounds)
@@ -115,7 +116,7 @@ public sealed class SandboxScreen : Screen
         }
     }
 
-    public override void Render(RenderContext context, FrameInfo frame)
+    public override void Render(RenderContext context)
     {
         var top = _layout.GetArea(context, "Top");
         var middle = _layout.GetArea(context, "Middle");

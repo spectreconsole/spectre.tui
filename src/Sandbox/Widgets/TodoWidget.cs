@@ -24,10 +24,6 @@ public sealed class ToDoItem(string todo, bool completed = false) : IListWidgetI
     }
 }
 
-/// <summary>
-/// A custom widget that wraps a list in a JustInTimeWidget so that
-/// we're only recalculating stuff if something changes.
-/// </summary>
 public sealed class TodoWidget : JustInTimeWidget
 {
     private readonly ListWidget<ToDoItem> _widget;

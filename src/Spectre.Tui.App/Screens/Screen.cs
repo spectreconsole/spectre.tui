@@ -1,7 +1,7 @@
 namespace Spectre.Tui.App;
 
 [PublicAPI]
-public abstract class Screen
+public abstract class Screen : IWidget
 {
     public virtual bool IsTransparent => false;
 
@@ -17,9 +17,9 @@ public abstract class Screen
     {
     }
 
-    public abstract void Render(RenderContext context, FrameInfo frame);
-
     public virtual void Update(FrameInfo frame, IRenderBounds bounds)
     {
     }
+
+    public abstract void Render(RenderContext context);
 }

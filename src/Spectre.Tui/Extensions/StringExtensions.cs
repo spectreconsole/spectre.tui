@@ -2,21 +2,19 @@ using Wcwidth;
 
 namespace Spectre.Tui;
 
-internal static class CharExtensions
-{
-    extension(char c)
-    {
-        public int GetCellWidth()
-        {
-            return UnicodeCalculator.GetWidth(c);
-        }
-    }
-}
-
 internal static class StringExtensions
 {
     extension(string? text)
     {
+        public string NormalizeNewLines()
+        {
+            return text == null
+                ? string.Empty
+                : text
+                    .Replace("\r\n", "\n", StringComparison.Ordinal)
+                    .Replace("\r", "\n");
+        }
+
         public string[] SplitLines()
         {
             return NormalizeNewLines(text)
@@ -76,12 +74,5 @@ internal static class StringExtensions
                 yield return graphemes.GetTextElement();
             }
         }
-    }
-
-    private static string NormalizeNewLines(string? text)
-    {
-        return text == null
-            ? string.Empty
-            : text.Replace("\r\n", "\n", StringComparison.Ordinal);
     }
 }

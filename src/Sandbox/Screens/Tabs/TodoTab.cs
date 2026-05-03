@@ -26,7 +26,7 @@ public sealed class TodoTab : SandboxTab
     public override string TabLabel => "List";
     public override string HelpMarkup => "[bold][[↑↓]][/]:Move  [bold][[SPACE]][/]:Select";
 
-    public override void OnEvent(ApplicationContext context, ApplicationMessage e)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage e)
     {
         if (e is not KeyMessage k)
         {

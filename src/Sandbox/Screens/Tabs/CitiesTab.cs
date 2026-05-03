@@ -34,7 +34,7 @@ public sealed class CitiesTab : SandboxTab
     public override string TabLabel => "Table";
     public override string HelpMarkup => "[bold][[↑↓]][/]:Move";
 
-    public override void OnEvent(ApplicationContext context, ApplicationMessage e)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage e)
     {
         if (e is not KeyMessage k)
         {

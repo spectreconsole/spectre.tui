@@ -44,7 +44,7 @@ internal sealed class ScreenStack : IEnumerable<Screen>
         for (var i = firstOpaque; i < _screens.Count; i++)
         {
             _screens[i].Update(frame, context);
-            _screens[i].Render(context, frame);
+            context.Render(_screens[i]);
         }
     }
 

@@ -235,7 +235,8 @@ public static class RenderContextExtensions
 
         public void SetCursorPosition(int x, int y)
         {
-            context.CursorPosition = new Position(x, y);
+            // Translate viewport-local to absolute screen so nested widgets don't have to offset by Screen.X/Y.
+            context.CursorPosition = new Position(context.Screen.X + x, context.Screen.Y + y);
         }
 
         public void Blit(Position position, RenderSurface surface)
