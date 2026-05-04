@@ -26,6 +26,7 @@ public sealed class SandboxScreen : Screen
             new TodoTab(),
             new ScrollTab(),
             new TextBoxTab(),
+            new SparklineTab(),
         ];
 
         _tabs = new TabsWidget(_tabComponents.Select(t => t.TabLabel).ToList());
