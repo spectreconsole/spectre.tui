@@ -1,25 +1,12 @@
 namespace Spectre.Tui;
 
-/// <summary>
-/// Represents a layout
-/// </summary>
 [PublicAPI]
 public sealed class Layout : IRatioResolvable
 {
     private Layout[] _children;
 
-    /// <summary>
-    /// Gets or sets the name.
-    /// </summary>
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
-    /// <summary>
-    /// Gets or sets the ratio.
-    /// </summary>
-    /// <remarks>
-    /// Defaults to <c>1</c>.
-    /// Must be greater than <c>0</c>.
-    /// </remarks>
     public int Ratio
     {
         get;
@@ -34,13 +21,6 @@ public sealed class Layout : IRatioResolvable
         }
     }
 
-    /// <summary>
-    /// Gets or sets the minimum width.
-    /// </summary>
-    /// <remarks>
-    /// Defaults to <c>1</c>.
-    /// Must be greater than <c>0</c>.
-    /// </remarks>
     public int MinimumSize
     {
         get;
@@ -55,13 +35,6 @@ public sealed class Layout : IRatioResolvable
         }
     }
 
-    /// <summary>
-    /// Gets or sets the width.
-    /// </summary>
-    /// <remarks>
-    /// Defaults to <c>null</c>.
-    /// Must be greater than <c>0</c>.
-    /// </remarks>
     public int? Size
     {
         get => field;
@@ -76,19 +49,10 @@ public sealed class Layout : IRatioResolvable
         }
     }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether or not the layout should
-    /// be visible or not.
-    /// </summary>
-    /// <remarks>Defaults to <c>true</c>.</remarks>
     public bool IsVisible { get; set; } = true;
 
     private LayoutSplitter? Splitter { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Layout"/> class.
-    /// </summary>
-    /// <param name="name">The layout name.</param>
     public Layout(string? name = null)
     {
         _children = [];
@@ -97,7 +61,7 @@ public sealed class Layout : IRatioResolvable
         Ratio = 1;
         Size = null;
 
-        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Name = name;
     }
 
     public Rectangle GetArea(IRenderBounds context, string name)
@@ -121,7 +85,7 @@ public sealed class Layout : IRatioResolvable
             if (current.Layout.HasChildren() && current.Layout.Splitter != null)
             {
                 foreach (var childAndRegion in current.Layout.Splitter
-                             .Divide(current.Region, current.Layout.GetChildren()))
+                             .Divide(current.Region, current.Layout.GetChildren(includeInvisible: false)))
                 {
                     stack.Push(childAndRegion);
                 }
@@ -131,11 +95,6 @@ public sealed class Layout : IRatioResolvable
         throw new InvalidOperationException($"Could not find layout '{name}'");
     }
 
-    /// <summary>
-    /// Gets a child layout by its name.
-    /// </summary>
-    /// <param name="name">The layout name.</param>
-    /// <returns>The specified child <see cref="Layout"/>.</returns>
     public Layout GetLayout(string name)
     {
         if (string.IsNullOrEmpty(name))
@@ -154,7 +113,7 @@ public sealed class Layout : IRatioResolvable
                 return current;
             }
 
-            foreach (var layout in current.GetChildren())
+            foreach (var layout in current.GetChildren(includeInvisible: true))
             {
                 stack.Push(layout);
             }
@@ -163,31 +122,26 @@ public sealed class Layout : IRatioResolvable
         throw new InvalidOperationException($"Could not find layout '{name}'");
     }
 
-    /// <summary>
-    /// Splits the layout into rows.
-    /// </summary>
-    /// <param name="children">The layout to split into rows.</param>
-    /// <returns>The same instance so that multiple calls can be chained.</returns>
     public Layout SplitRows(params Layout[] children)
     {
         PerformSplit(LayoutSplitter.Row, children);
         return this;
     }
 
-    /// <summary>
-    /// Splits the layout into columns.
-    /// </summary>
-    /// <param name="children">The layout to split into columns.</param>
-    /// <returns>The same instance so that multiple calls can be chained.</returns>
     public Layout SplitColumns(params Layout[] children)
     {
         PerformSplit(LayoutSplitter.Column, children);
         return this;
     }
 
-    private IEnumerable<Layout> GetChildren()
+    private IEnumerable<Layout> GetChildren(bool includeInvisible)
     {
-        return _children.Where(c => c.IsVisible);
+        if (!includeInvisible)
+        {
+            return _children.Where(c => c.IsVisible);
+        }
+
+        return _children;
     }
 
     private bool HasChildren()
@@ -207,51 +161,46 @@ public sealed class Layout : IRatioResolvable
     }
 }
 
-/// <summary>
-/// Contains extension methods for <see cref="Layout"/>.
-/// </summary>
 [PublicAPI]
 public static class LayoutExtensions
 {
-    /// <summary>
-    /// Sets the ratio of the layout.
-    /// </summary>
-    /// <param name="layout">The layout.</param>
-    /// <param name="ratio">The ratio.</param>
-    /// <returns>The same instance so that multiple calls can be chained.</returns>
-    public static Layout Ratio(this Layout layout, int ratio)
+    extension(Layout layout)
     {
-        ArgumentNullException.ThrowIfNull(layout);
+        public Layout Ratio(int ratio)
+        {
+            ArgumentNullException.ThrowIfNull(layout);
 
-        layout.Ratio = ratio;
-        return layout;
-    }
+            layout.Ratio = ratio;
+            return layout;
+        }
 
-    /// <summary>
-    /// Sets the size of the layout.
-    /// </summary>
-    /// <param name="layout">The layout.</param>
-    /// <param name="size">The size.</param>
-    /// <returns>The same instance so that multiple calls can be chained.</returns>
-    public static Layout Size(this Layout layout, int size)
-    {
-        ArgumentNullException.ThrowIfNull(layout);
+        public Layout Size(int size)
+        {
+            ArgumentNullException.ThrowIfNull(layout);
 
-        layout.Size = size;
-        return layout;
-    }
+            layout.Size = size;
+            return layout;
+        }
 
-    /// <summary>
-    /// Sets the minimum width of the layout.
-    /// </summary>
-    /// <param name="layout">The layout.</param>
-    /// <param name="size">The size.</param>
-    /// <returns>The same instance so that multiple calls can be chained.</returns>
-    public static Layout MinimumSize(this Layout layout, int size)
-    {
-        ArgumentNullException.ThrowIfNull(layout);
+        public Layout MinimumSize(int size)
+        {
+            ArgumentNullException.ThrowIfNull(layout);
 
-        layout.MinimumSize = size;
-        return layout;
+            layout.MinimumSize = size;
+            return layout;
+        }
+
+        public Layout Visible(bool visible = true)
+        {
+            ArgumentNullException.ThrowIfNull(layout);
+
+            layout.IsVisible = visible;
+            return layout;
+        }
+
+        public Layout Hidden()
+        {
+            return layout.Visible(false);
+        }
     }
 }
