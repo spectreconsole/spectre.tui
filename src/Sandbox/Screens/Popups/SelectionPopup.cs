@@ -3,6 +3,7 @@ namespace Sandbox;
 public class SelectionPopup : Screen
 {
     private readonly string _name;
+    private readonly KeyBinding _quit = KeyBinding.For(Key.Escape);
 
     public SelectionPopup(string name)
     {
@@ -13,9 +14,9 @@ public class SelectionPopup : Screen
     {
         switch (message)
         {
-            case KeyMessage { Info.Key: ConsoleKey.Escape }:
+            case KeyMessage key when _quit.Matches(key):
                 context.Pop();
-                break;
+                return;
         }
     }
 

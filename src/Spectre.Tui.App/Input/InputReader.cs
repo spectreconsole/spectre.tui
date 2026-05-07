@@ -31,6 +31,7 @@ internal sealed class InputReader : IInputReader
     {
         return !System.Console.KeyAvailable
             ? new ValueTask<ApplicationMessage?>((ApplicationMessage?)null)
-            : new ValueTask<ApplicationMessage?>(new KeyMessage(System.Console.ReadKey(true)));
+            : new ValueTask<ApplicationMessage?>(
+                KeyMapper.Map(System.Console.ReadKey(true)));
     }
 }

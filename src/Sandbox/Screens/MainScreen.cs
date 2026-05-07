@@ -11,6 +11,7 @@ public sealed class SandboxScreen : Screen
     private readonly ProgressBarWidget _progress;
     private readonly Layout _layout;
     private readonly SandboxTab[] _tabComponents;
+    private readonly MainScreenKeyMap _keyMap = new();
 
     private double _progressDirection = 1d;
     private IJobHandle? _tickJob;
@@ -46,8 +47,9 @@ public sealed class SandboxScreen : Screen
                 new Layout("Bottom")
                     .Size(1)
                     .SplitColumns(
-                        new Layout("BottomLeft"),
-                        new Layout("BottomRight").Size(1)));
+                        new Layout("Help"),
+                        new Layout("Ticks").Size(12),
+                        new Layout("Spinner").Size(1)));
     }
 
     public override void OnEnter(ApplicationContext context)
@@ -72,26 +74,24 @@ public sealed class SandboxScreen : Screen
             return;
         }
 
-        if (message is not KeyMessage k)
+        if (message is KeyMessage key)
         {
-            return;
-        }
-
-        switch (k.Info.Key)
-        {
-            case ConsoleKey.Q:
+            if (_keyMap.Quit.Matches(key))
+            {
                 context.Quit();
                 return;
-            case ConsoleKey.B:
-                context.Push(new Popup(new Size(50, 12), "Popup", new InfoPopup()));
-                return;
-            case ConsoleKey.Tab:
-                _tabs.MoveNext();
-                return;
-        }
+            }
 
-        _tabComponents[_tabs.SelectedIndex]
-            .OnMessage(context, message);
+            if (_keyMap.Popup.Matches(key))
+            {
+                context.Push(new PopupWidget(new Size(50, 12), "Popup", new InfoPopup()));
+                return;
+            }
+
+            _tabs.HandleKey(key);
+            _tabComponents[_tabs.SelectedIndex]
+                .OnMessage(context, message);
+        }
     }
 
     public override void Update(FrameInfo frame, IRenderBounds bounds)
@@ -121,8 +121,9 @@ public sealed class SandboxScreen : Screen
     {
         var top = _layout.GetArea(context, "Top");
         var middle = _layout.GetArea(context, "Middle");
-        var bottom = _layout.GetArea(context, "BottomLeft");
-        var bottomRight = _layout.GetArea(context, "BottomRight");
+        var help = _layout.GetArea(context, "Help");
+        var ticks = _layout.GetArea(context, "Ticks");
+        var spinner = _layout.GetArea(context, "Spinner");
 
         // FPS
         context.Render(_fps, top);
@@ -144,13 +145,14 @@ public sealed class SandboxScreen : Screen
         context.Render(_progress, _layout.GetArea(context, "Progress"));
 
         // Help
-        var helpMarkup = $"[bold][[Q]][/]:Quit  [bold][[B]][/]:Popup  {ActiveTab.HelpMarkup}  [grey](ticks: {_tickCount})[/]";
+        context.Render(new HelpWidget(_keyMap, _tabs.KeyMap, ActiveTab), help);
+
+        // Ticks
         context.Render(
-            Paragraph.FromMarkup(helpMarkup)
-                .Style(new Style(Color.Gray))
-                .Centered(), bottom);
+            Paragraph.FromMarkup($"[grey](ticks: {_tickCount})[/]")
+                .RightAligned(), ticks);
 
         // Spinner
-        context.Render(_spinner, bottomRight);
+        context.Render(_spinner, spinner);
     }
 }

@@ -1,9 +1,6 @@
-using Spectre.Console;
+namespace Sandbox;
 
-namespace Spectre.Tui.App;
-
-[PublicAPI]
-public sealed class Popup : Screen
+public sealed class PopupWidget : Screen
 {
     public Size Size { get; }
     public string Title { get; }
@@ -11,7 +8,7 @@ public sealed class Popup : Screen
 
     public sealed override bool IsTransparent => true;
 
-    public Popup(Size size, string title, Screen inner)
+    public PopupWidget(Size size, string title, Screen inner)
     {
         Size = size;
         Title = title ?? throw new ArgumentNullException(nameof(title));
@@ -42,7 +39,7 @@ public sealed class Popup : Screen
     {
         // Render the popup
         context.Render(
-            new PopupWidget(Size)
+            new Spectre.Tui.PopupWidget(Size)
                 .Content(
                     new BoxWidget()
                         .Title(Title, TitlePosition.Top, Justify.Center)

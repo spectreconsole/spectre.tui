@@ -1,4 +1,4 @@
-namespace Spectre.Tui.App;
+namespace Spectre.Tui;
 
 [PublicAPI]
 public interface IFocusable

@@ -9,7 +9,6 @@ public sealed class SparklineTab : SandboxTab
     private TimeSpan _streamElapsed = TimeSpan.Zero;
 
     public override string TabLabel => "Sparkline";
-    public override string HelpMarkup => "[bold][[Tab]][/]:Next tab";
 
     public SparklineTab()
     {

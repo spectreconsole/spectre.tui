@@ -3,9 +3,19 @@ namespace Sandbox;
 public sealed class TodoTab : SandboxTab
 {
     private readonly TodoWidget _todo;
+    private readonly KeyBinding _toggle = KeyBinding.For(Key.Space).WithHelp("Toggle");
 
     public override string TabLabel => "List";
-    public override string HelpMarkup => "[bold][[↑↓]][/]:Move  [bold][[SPACE]][/]:Toggle";
+
+    public override IEnumerable<KeyBinding> Help()
+    {
+        foreach (var binding in _todo.KeyMap.Help())
+        {
+            yield return binding;
+        }
+
+        yield return _toggle;
+    }
 
     public TodoTab()
     {
@@ -26,18 +36,17 @@ public sealed class TodoTab : SandboxTab
         ]);
     }
 
-    public override void OnMessage(ApplicationContext context, ApplicationMessage e)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage message)
     {
-        if (e is not KeyMessage k)
+        if (message is KeyMessage key)
         {
-            return;
-        }
+            if (_toggle.Matches(key))
+            {
+                _todo.Toggle();
+                return;
+            }
 
-        switch (k.Info.Key)
-        {
-            case ConsoleKey.UpArrow: _todo.MoveUp(); break;
-            case ConsoleKey.DownArrow: _todo.MoveDown(); break;
-            case ConsoleKey.Spacebar: _todo.Toggle(); break;
+            _todo.HandleKey(key);
         }
     }
 

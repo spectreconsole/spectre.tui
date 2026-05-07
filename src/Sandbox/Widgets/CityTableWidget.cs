@@ -40,6 +40,7 @@ public sealed class CityTableWidget : JustInTimeWidget
     public int Position => _table.SelectedIndex ?? 0;
     public int Length => _table.Rows.Count;
     public City? Selected => _table.SelectedItem;
+    public TableKeyMap<City> KeyMap => _table.KeyMap;
 
     public CityTableWidget(IEnumerable<City> cities)
     {
@@ -51,9 +52,9 @@ public sealed class CityTableWidget : JustInTimeWidget
             .SelectedIndex(0);
     }
 
-    public void MoveUp()
+    public void HandleKey(IKeyInfo info)
     {
-        _table.MoveUp();
+        _table.KeyMap.HandleKey(info);
         MarkAsDirty();
     }
 

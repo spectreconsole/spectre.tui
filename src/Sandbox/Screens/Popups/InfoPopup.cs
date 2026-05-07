@@ -3,7 +3,7 @@ namespace Sandbox;
 public sealed class InfoPopup : Screen
 {
     private int _lastTick;
-
+    private readonly KeyBinding _quit = KeyBinding.For(Key.Escape);
     private readonly ScrollViewWidget _scroller =
         new ScrollViewWidget().HorizontalScroll(ScrollMode.Disabled);
 
@@ -11,17 +11,14 @@ public sealed class InfoPopup : Screen
     {
         switch (message)
         {
+            case KeyMessage key when _quit.Matches(key):
+                context.Pop();
+                return;
+            case KeyMessage key:
+                _scroller.KeyMap.HandleKey(key);
+                break;
             case TickMessage tick:
                 _lastTick = tick.Count;
-                break;
-            case KeyMessage { Info.Key: ConsoleKey.B or ConsoleKey.Escape }:
-                context.Pop();
-                break;
-            case KeyMessage { Info.Key: ConsoleKey.UpArrow }:
-                _scroller.ScrollUp();
-                break;
-            case KeyMessage { Info.Key: ConsoleKey.DownArrow }:
-                _scroller.ScrollDown();
                 break;
         }
     }

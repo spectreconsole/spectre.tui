@@ -8,18 +8,21 @@ public sealed class ScrollViewWidget : IWidget
     private readonly ScrollbarWidget _horizontalBar = new ScrollbarWidget().HorizontalBottom();
     private int _lastPageHeight;
 
-    public IWidget? Inner { get; set; }
+    public ScrollViewKeyMap KeyMap { get; }
 
+    public IWidget? Inner { get; set; }
     public int VerticalOffset { get; set; }
     public int HorizontalOffset { get; set; }
-
     public ScrollMode VerticalScroll { get; set; } = ScrollMode.Auto;
     public ScrollMode HorizontalScroll { get; set; } = ScrollMode.Auto;
-
     public Size? ContentSize { get; set; }
-
     public Style? ScrollbarStyle { get; set; }
     public Style? ScrollbarThumbStyle { get; set; }
+
+    public ScrollViewWidget()
+    {
+        KeyMap = new ScrollViewKeyMap(this);
+    }
 
     public void ScrollUp(int by = 1)
     {
@@ -61,7 +64,7 @@ public sealed class ScrollViewWidget : IWidget
         VerticalOffset = int.MaxValue;
     }
 
-    public void ScrollToStart()
+    public void ScrollToHome()
     {
         HorizontalOffset = 0;
     }

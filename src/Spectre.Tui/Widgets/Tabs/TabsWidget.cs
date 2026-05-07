@@ -7,6 +7,7 @@ public class TabsWidget<T> : IWidget
     private int _selectedIndex;
 
     public List<T> Items { get; }
+    public TabsKeyMap<T> KeyMap { get; }
     public Style HighlightStyle { get; set; }
     public bool WrapAround { get; set; }
     public TextSpan Separator { get; set; }
@@ -40,6 +41,7 @@ public class TabsWidget<T> : IWidget
     public TabsWidget(params List<T> items)
     {
         Items = items ?? throw new ArgumentNullException(nameof(items));
+        KeyMap = new TabsKeyMap<T>(this);
         HighlightStyle = new Style(decoration: Decoration.Invert);
         Separator = new TextSpan("|", Color.Gray);
     }

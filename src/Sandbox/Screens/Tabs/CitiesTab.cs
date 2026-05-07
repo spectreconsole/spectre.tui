@@ -3,9 +3,19 @@ namespace Sandbox;
 public sealed class CitiesTab : SandboxTab
 {
     private readonly CityTableWidget _cities;
+    private readonly KeyBinding _select = KeyBinding.For(Key.Enter).WithHelp("Info");
 
     public override string TabLabel => "Table";
-    public override string HelpMarkup => "[bold][[↑↓]][/]:Move  [bold][[Enter]][/]:Info";
+
+    public override IEnumerable<KeyBinding> Help()
+    {
+        foreach (var binding in _cities.KeyMap.Help())
+        {
+            yield return binding;
+        }
+
+        yield return _select;
+    }
 
     public CitiesTab()
     {
@@ -34,24 +44,18 @@ public sealed class CitiesTab : SandboxTab
         ]);
     }
 
-    public override void OnMessage(ApplicationContext context, ApplicationMessage e)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage message)
     {
-        if (e is not KeyMessage k)
+        if (message is KeyMessage key)
         {
-            return;
-        }
+            if (_select.Matches(key) && _cities.Selected != null)
+            {
+                context.Push(new PopupWidget(new Size(40, 8), "City selected",
+                    new SelectionPopup($"{_cities.Selected.Name}")));
+                return;
+            }
 
-        switch (k.Info.Key)
-        {
-            case ConsoleKey.UpArrow: _cities.MoveUp(); break;
-            case ConsoleKey.DownArrow: _cities.MoveDown(); break;
-            case ConsoleKey.Enter:
-                if (_cities.Selected != null)
-                {
-                    context.Push(new Popup(new Size(40, 8), "City selected",
-                        new SelectionPopup($"{_cities.Selected.Name}")));
-                }
-                break;
+            _cities.HandleKey(key);
         }
     }
 

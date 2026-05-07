@@ -1,11 +1,15 @@
 namespace Sandbox;
 
-public abstract class SandboxTab : IWidget
+public abstract class SandboxTab : IWidget, IKeyMap
 {
     public abstract string TabLabel { get; }
-    public abstract string HelpMarkup { get; }
 
-    public virtual void OnMessage(ApplicationContext context, ApplicationMessage e)
+    public virtual IEnumerable<KeyBinding> Help()
+    {
+        yield break;
+    }
+
+    public virtual void OnMessage(ApplicationContext context, ApplicationMessage message)
     {
     }
 

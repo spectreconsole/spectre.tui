@@ -31,6 +31,7 @@ public sealed class TodoWidget : JustInTimeWidget
     public int Position => _widget.SelectedIndex ?? 0;
     public int Length => _widget.Items.Count;
     public ToDoItem? Selected => _widget.SelectedItem;
+    public ListKeyMap<ToDoItem> KeyMap => _widget.KeyMap;
 
     public TodoWidget(List<ToDoItem> items)
     {
@@ -40,15 +41,9 @@ public sealed class TodoWidget : JustInTimeWidget
             .SelectedIndex(0);
     }
 
-    public void MoveUp()
+    public void HandleKey(IKeyInfo info)
     {
-        _widget.MoveUp();
-        MarkAsDirty();
-    }
-
-    public void MoveDown()
-    {
-        _widget.MoveDown();
+        _widget.KeyMap.HandleKey(info);
         MarkAsDirty();
     }
 

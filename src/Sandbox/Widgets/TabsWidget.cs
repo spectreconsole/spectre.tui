@@ -14,6 +14,8 @@ public sealed class TabsWidget : JustInTimeWidget
         }
     }
 
+    public IKeyMap KeyMap => _widget.KeyMap;
+
     private class Item(string markup) : ITabWidgetItem
     {
         public TextLine CreateTextLine(bool isSelected)
@@ -30,9 +32,9 @@ public sealed class TabsWidget : JustInTimeWidget
             .SelectedIndex(0);
     }
 
-    public void MoveNext()
+    public void HandleKey(IKeyInfo info)
     {
-        _widget.MoveRight();
+        _widget.KeyMap.HandleKey(info);
         MarkAsDirty();
     }
 

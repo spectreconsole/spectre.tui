@@ -1,7 +1,7 @@
 namespace Spectre.Tui;
 
 [PublicAPI]
-public sealed class TextBoxWidget : IWidget
+public sealed class TextBoxWidget : IWidget, IFocusable
 {
     private readonly TextBoxBuffer _buffer = new();
     private int _cursorRow;
@@ -10,6 +10,7 @@ public sealed class TextBoxWidget : IWidget
     private int _horizontalOffset;
     private int _verticalOffset;
 
+    public TextBoxKeyMap KeyMap { get; }
     public TextBoxMode Mode { get; set; } = TextBoxMode.SingleLine;
 
     public string Text
@@ -33,6 +34,11 @@ public sealed class TextBoxWidget : IWidget
 
     public TextBoxPosition Cursor => new(_cursorRow, _cursorColumn);
     public int Length => _buffer.Length;
+
+    public TextBoxWidget()
+    {
+        KeyMap = new TextBoxKeyMap(this);
+    }
 
     public void Insert(string text)
     {

@@ -9,6 +9,7 @@ public sealed class ListWidget<TItem> : IWidget
     private int _highlightSymbolWidth;
 
     public List<TItem> Items { get; }
+    public ListKeyMap<TItem> KeyMap { get; }
     public Style? HighlightStyle { get; set; }
     public bool WrapAround { get; set; }
 
@@ -29,6 +30,12 @@ public sealed class ListWidget<TItem> : IWidget
         set => SetSelectedIndex(value);
     }
 
+    public ListWidget(params List<TItem> items)
+    {
+        Items = items ?? throw new ArgumentNullException(nameof(items));
+        KeyMap = new ListKeyMap<TItem>(this);
+    }
+
     public void MoveUp()
     {
         SetSelectedIndex(--_selectedIndex);
@@ -47,11 +54,6 @@ public sealed class ListWidget<TItem> : IWidget
     public void MoveToEnd()
     {
         SetSelectedIndex(Items.Count - 1);
-    }
-
-    public ListWidget(params List<TItem> items)
-    {
-        Items = items ?? throw new ArgumentNullException(nameof(items));
     }
 
     void IWidget.Render(RenderContext context)

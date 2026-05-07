@@ -5,7 +5,8 @@ public sealed class ScrollTab : SandboxTab
     private readonly ScrollViewWidget _scroll;
 
     public override string TabLabel => "Scroll";
-    public override string HelpMarkup => "[bold][[↑↓←→ PgUp PgDn Home End]][/]:Scroll";
+
+    public override IEnumerable<KeyBinding> Help() => _scroll.KeyMap.Help();
 
     public ScrollTab()
     {
@@ -15,8 +16,7 @@ public sealed class ScrollTab : SandboxTab
                     """
                     [yellow]Scrollable paragraph demo[/]
 
-                    Use [bold]↑↓[/] to scroll one row, [bold]←→[/] to scroll one column.
-                    [bold]PgUp/PgDn[/] move by a page; [bold]Home/End[/] jump to the extremes.
+                    Use [bold]↑↓[/] to scroll one row.
 
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur porttitor scelerisque lorem, vel mattis neque vulputate pellentesque. Nunc hendrerit est quis auctor vulputate. Sed molestie nisl eros, rutrum ornare enim feugiat at.
                     Aliquam mollis sit amet nisi eu vestibulum. Nam pharetra hendrerit nisl sit amet luctus.
@@ -41,23 +41,13 @@ public sealed class ScrollTab : SandboxTab
             .ScrollbarThumbStyle(Color.Green);
     }
 
-    public override void OnMessage(ApplicationContext context, ApplicationMessage evt)
+    public override void OnMessage(ApplicationContext context, ApplicationMessage message)
     {
-        if (evt is not KeyMessage k)
+        switch (message)
         {
-            return;
-        }
-
-        switch (k.Info.Key)
-        {
-            case ConsoleKey.UpArrow: _scroll.ScrollUp(); break;
-            case ConsoleKey.DownArrow: _scroll.ScrollDown(); break;
-            case ConsoleKey.LeftArrow: _scroll.ScrollLeft(); break;
-            case ConsoleKey.RightArrow: _scroll.ScrollRight(); break;
-            case ConsoleKey.PageUp: _scroll.PageUp(); break;
-            case ConsoleKey.PageDown: _scroll.PageDown(); break;
-            case ConsoleKey.Home: _scroll.ScrollToTop(); break;
-            case ConsoleKey.End: _scroll.ScrollToBottom(); break;
+            case KeyMessage key:
+                _scroll.KeyMap.HandleKey(key);
+                break;
         }
     }
 

@@ -2,19 +2,25 @@ namespace Sandbox;
 
 public sealed class TextBoxTab : SandboxTab
 {
-    public override string TabLabel => "TextBox";
-    public override string HelpMarkup => "[bold][[Enter]][/]:Open";
+    private readonly KeyBinding _open = KeyBinding.For(Key.Enter).WithHelp("Open");
 
-    public override void OnMessage(ApplicationContext context, ApplicationMessage e)
+    public override string TabLabel => "TextBox";
+
+    public override IEnumerable<KeyBinding> Help()
     {
-        if (e is not KeyMessage k)
+        yield return _open;
+    }
+
+    public override void OnMessage(ApplicationContext context, ApplicationMessage message)
+    {
+        if (message is not KeyMessage k)
         {
             return;
         }
 
-        if (k.Info.Key == ConsoleKey.Enter)
+        if (_open.Matches(k))
         {
-            context.Push(new Popup(new Size(50, 15), "TextBox", new TextBoxPopup()));
+            context.Push(new PopupWidget(new Size(50, 15), "TextBox", new TextBoxPopup()));
         }
     }
 

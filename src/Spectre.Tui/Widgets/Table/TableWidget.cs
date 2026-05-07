@@ -10,6 +10,7 @@ public sealed class TableWidget<TRow> : IWidget
     public List<TRow> Rows { get; }
     public List<TableColumn> Columns { get; } = [];
 
+    public TableKeyMap<TRow> KeyMap { get; }
     public Style? HighlightStyle { get; set; }
     public Style? HeaderStyle { get; set; }
     public bool WrapAround { get; set; }
@@ -28,6 +29,7 @@ public sealed class TableWidget<TRow> : IWidget
     public TableWidget(params List<TRow> rows)
     {
         Rows = rows ?? throw new ArgumentNullException(nameof(rows));
+        KeyMap = new TableKeyMap<TRow>(this);
     }
 
     public void MoveUp()
@@ -40,12 +42,12 @@ public sealed class TableWidget<TRow> : IWidget
         SetSelectedIndex(++_selectedIndex);
     }
 
-    public void MoveToStart()
+    public void MoveToTop()
     {
         SetSelectedIndex(0);
     }
 
-    public void MoveToEnd()
+    public void MoveToBottom()
     {
         SetSelectedIndex(Rows.Count - 1);
     }

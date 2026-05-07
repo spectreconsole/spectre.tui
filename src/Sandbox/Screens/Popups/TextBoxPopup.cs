@@ -7,9 +7,6 @@ public class TextBoxPopup : Screen
     private readonly TextBoxWidget _password;
     private readonly TextBoxWidget _notes;
     private readonly FocusRing _focusRing;
-    private readonly FocusableTextBox _nameFocusable;
-    private readonly FocusableTextBox _passwordFocusable;
-    private readonly FocusableTextBox _notesFocusable;
 
     public TextBoxPopup()
     {
@@ -26,11 +23,7 @@ public class TextBoxPopup : Screen
             .AsMultiLine()
             .Placeholder("Notes (multi-line, horizontal scroll)…");
 
-        _nameFocusable = new FocusableTextBox(_name);
-        _passwordFocusable = new FocusableTextBox(_password);
-        _notesFocusable = new FocusableTextBox(_notes);
-        _focusRing = new FocusRing(_nameFocusable, _passwordFocusable, _notesFocusable);
-
+        _focusRing = new FocusRing(_name, _password, _notes);
         _layout = new Layout("Root")
             .SplitRows(
                 new Layout("Name").Size(3),
@@ -42,19 +35,19 @@ public class TextBoxPopup : Screen
     {
         if (e is KeyMessage key)
         {
-            switch (key.Info.Key)
+            switch (key.Key)
             {
-                case ConsoleKey.Escape:
+                case Key.Escape:
                     context.Pop();
                     break;
-                case ConsoleKey.Tab:
-                    CycleFocus(forward: (key.Info.Modifiers & ConsoleModifiers.Shift) == 0);
+                case Key.Tab:
+                    CycleFocus(forward: !key.Shift);
                     return;
             }
 
-            if (_focusRing.Focused is FocusableTextBox textbox)
+            if (_focusRing.Focused is TextBoxWidget textbox)
             {
-                textbox.Widget.HandleKey(key);
+                textbox.KeyMap.HandleKey(key);
             }
         }
     }
@@ -70,22 +63,12 @@ public class TextBoxPopup : Screen
 
     private void CycleFocus(bool forward)
     {
-        var items = new IFocusable[] { _nameFocusable, _passwordFocusable, _notesFocusable };
+        // TODO: Clean this up by adding a cycle method
+        var items = new IFocusable[] { _name, _password, _notes };
         var currentIdx = Array.IndexOf(items, _focusRing.Focused);
         var step = forward ? 1 : -1;
         var next = (currentIdx + step + items.Length) % items.Length;
         _focusRing.Focus(items[next]);
-    }
-
-    private sealed class FocusableTextBox(TextBoxWidget widget) : IFocusable
-    {
-        public TextBoxWidget Widget { get; } = widget;
-
-        public bool IsFocused
-        {
-            get => Widget.IsFocused;
-            set => Widget.IsFocused = value;
-        }
     }
 
     private static BoxWidget BuildBox(string title, TextBoxWidget inner, Color border)
