@@ -383,6 +383,14 @@ public sealed class TextBoxWidget : IWidget, IFocusable
             _horizontalOffset = cursorCellPos - width + 1;
         }
 
+        // When the cursor is at the end of the text and content is still scrolled off to the
+        // left, keep the cursor pinned to the right edge rather than letting it drift left as
+        // characters are deleted.
+        if (_cursorColumn == line.Count && _horizontalOffset > cursorCellPos - width + 1)
+        {
+            _horizontalOffset = Math.Max(0, cursorCellPos - width + 1);
+        }
+
         if (_horizontalOffset < 0)
         {
             _horizontalOffset = 0;
