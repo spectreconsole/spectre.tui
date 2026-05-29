@@ -430,6 +430,23 @@ public sealed class TextBoxWidgetTests
         }
 
         [Fact]
+        public void Should_Keep_Cursor_Pinned_At_Right_Edge_When_Deleting_From_Overflowed_Text()
+        {
+            // Given
+            var box = new TextBoxWidget().Text("HelloWorldXYZ");
+            box.MoveToEnd();
+            var fixture = new TuiFixture(new Size(10, 1));
+            fixture.Render(box); // Establishes _horizontalOffset = 4, shows "oWorldXYZ•"
+
+            // When
+            box.DeleteBackward();
+            var result = fixture.Render(box);
+
+            // Then
+            result.ShouldBe("loWorldXY•");
+        }
+
+        [Fact]
         public void Should_Scroll_Vertically_To_Keep_Cursor_Visible_When_MultiLine()
         {
             // Given
